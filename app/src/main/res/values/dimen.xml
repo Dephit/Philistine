@@ -2,4 +2,5 @@
 <resources>
     <dimen name="buttons_corner_radius">@dimen/_3sdp</dimen>
     <dimen name="minus_buttons_corner_radius">@dimen/_minus3sdp</dimen>
+    <dimen name="spacing">@dimen/_5sdp</dimen>
 </resources>

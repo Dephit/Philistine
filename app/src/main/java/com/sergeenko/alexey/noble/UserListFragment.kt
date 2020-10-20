@@ -1,16 +1,18 @@
 package com.sergeenko.alexey.noble
 
-import androidx.lifecycle.ViewModelProvider
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.KeyEvent
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.sergeenko.alexey.noble.dataclasses.Client
 import com.sergeenko.alexey.noble.dataclasses.Language
 import com.squareup.picasso.Picasso
@@ -33,7 +35,7 @@ class UserListFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(UserListViewModel::class.java)
         search_edit.setOnFocusChangeListener { v, hasFocus ->
-            search_input.setStartIconDrawable(if(hasFocus) R.drawable.ic_close else R.drawable.ic_search)
+            search_input.setStartIconDrawable(if (hasFocus) R.drawable.ic_close else R.drawable.ic_search)
         }
         search_input.setStartIconOnClickListener {
             hideKeyboard(activity)
@@ -83,7 +85,7 @@ class UserListFragment : Fragment() {
     private fun showSortToast() {
         viewModel.getLanguage()?.apply {
             Toast.makeText(context,
-                    when(viewModel.sortBy) {
+                    when (viewModel.sortBy) {
                         SortType.SirnameDesc -> sorting_by_alphabet_desc
                         SortType.SirnameAsc -> sorting_by_alphabet_asc
                         SortType.DateDesc -> sorting_by_date_desc
@@ -113,9 +115,11 @@ class UserListFragment : Fragment() {
                     search_edit.hint = find_client
                 }
             })
+            val spacingInPixels = resources.getDimensionPixelSize(R.dimen.spacing)
+            users_list.addItemDecoration(SpacesItemDecoration(3, spacingInPixels))
             clientList.observe(viewLifecycleOwner, {
-                val userAdapter = getLanguage()?.let {
-                    it1 -> ClientListAdapter(it1, it)
+                val userAdapter = getLanguage()?.let { it1 ->
+                    ClientListAdapter(it1, it)
                 }
                 users_list.apply {
                     layoutManager = GridLayoutManager(requireContext(), 3)
@@ -127,7 +131,7 @@ class UserListFragment : Fragment() {
 
 }
 
-class ClientListAdapter(val language: Language, private val clients:  List<Client>) : RecyclerView.Adapter<ClientListAdapter.ClientHolder>()  {
+class ClientListAdapter(val language: Language, private val clients: List<Client>) : RecyclerView.Adapter<ClientListAdapter.ClientHolder>()  {
 
     class ClientHolder(private val textView: ConstraintLayout) : RecyclerView.ViewHolder(textView)
 
@@ -163,4 +167,14 @@ class ClientListAdapter(val language: Language, private val clients:  List<Clien
 
     override fun getItemViewType(position: Int): Int = position
 
+}
+
+class SpacesItemDecoration(private val spanCount: Int, private val spacing: Int) : ItemDecoration() {
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        val position = parent.getChildAdapterPosition(view) // item position
+        val column: Int = position % spanCount // item column
+
+        outRect.left = column * spacing / spanCount
+        outRect.right = spacing - (column + 1) * spacing / spanCount
+    }
 }
