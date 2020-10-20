@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="close_button_fill">#032FA2FA</color>
+    <color name="close_button_fill_pressed">#0F2FA2FA</color>
+    <color name="close_button_stroke">#28425C</color>
+    <color name="drop_down_bg_color">#86A0D2</color>
+    <color name="colorPrimary">#28425C</color>
+    <color name="colorPrimaryDark">#0F161E</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="yellow">#FFC107</color>
+    <color name="white_green">#00FF73</color>
+    <color name="pink">#FF00B7</color>
+    <color name="dark_red">#F44336</color>
+    <color name="background">#0F161E</color>
+    <color name="light_blue">#1A86A0D2</color>
+    <color name="very_light_blue">#6184C7</color>
+    <color name="black15">#26FFFFFF</color>
+    <color name="black30">#4DFFFFFF</color>
+    <color name="black45">#73FFFFFF</color>
+    <color name="black60">#99FFFFFF</color>
+    <color name="black85">#D9FFFFFF</color>
+    <color name="black5">#0DFFFFFF</color>
+    <color name="light_blue_button_color">#2FA2FA</color>
+    <color name="light_blue_button_color2">#288AD6</color>
+    <color name="checked_bg_color">#233D62</color>
+
+    <color name="tran_50">#80000000</color>
+
+    <color name="dark_blue_button_color">#1A86A0D2</color>97, 132, 199, 0.25
+    <color name="dark_blue_button_color_2">#272D39</color>97, 132, 199, 0.25
+    <color name="light_25_blue">#406184C7</color>
+    <color name="blue_25">#254C79</color>
+    <color name="progress_bar_bg_color">#996184C7</color>97, 132, 199, 0.6
+    <color name="search_bg_color">#1A86A0D2</color>    134, 160, 210, 0.1);
+    <color name="dark_purple">#420767</color>
+    <color name="light_purple">#B664FF</color>
+
+    <color name="light_red">#EA7B73</color>
+    <color name="left_hand_color">#A12FFA</color>
+    <color name="left_hand_dark_color">#611A98</color>
+
+    <color name="right_hip_color">#2FFAD5</color>
+    <color name="right_hip_dark_color">#0E4A3F</color>
+
+    <color name="left_hip_color">#FAF22F</color>
+    <color name="left_hip_dark_color">#423F0D</color>
+
+    <color name="hips_color">#FA2F84</color>
+    <color name="hips_color_dark_color">#4A0D27</color>
+
+    <color name="chest_color">#FA782F</color>
+    <color name="chest_dark_color">#49230D</color>
+
+    <color name="waist_color">#04D900</color>
+    <color name="waist_dark_color">#034302</color>
+
+    <color name="dark_green">#022906</color>
+    <color name="light_green">#98CA85</color>
+    <color name="dark_yellow">#292402</color>
+    <color name="light_yellow">#FFE083</color>
+    <color name="dark_green2">#35553B</color>
+    <color name="light_green2">#89F3CE</color>
+    <color name="dark_pink">#400236</color>
+    <color name="light_pink">#F389F1</color>
+
+</resources>
+

@@ -1,0 +1,82 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:colorAccent" tools:targetApi="lollipop">@color/colorAccent</item>
+
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="ToggleButtonStyle">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/white_green</item>
+        <item name="android:textAppearance">@null</item>
+    </style>
+
+    <style name="LoginTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="android:background">@drawable/login_text_input</item>
+        <item name="boxStrokeColor">@color/very_light_blue</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@color/black45</item>
+
+    </style>
+
+
+    <style name="TextLabel" parent="Theme.AppCompat">
+        <!-- Hint color and label color in FALSE state -->
+        <item name="boxStrokeColor">@color/very_light_blue</item>
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="android:textColorHint">@color/very_light_blue</item>
+        <item name="colorAccent">@color/very_light_blue</item>
+        <item name="colorControlNormal">@color/very_light_blue</item>
+        <item name="colorControlActivated">@color/very_light_blue</item>
+    </style>
+
+
+    <style name="errorStyle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@android:color/holo_red_light</item>
+    </style>
+
+    <style name="AlertDialog" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="android:textColor">@color/background</item>
+        <item name="android:textColorPrimary">@color/background</item>
+        <item name="android:colorAccent">@color/background</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="my_dialog_theme" parent="ThemeOverlay.AppCompat.Dialog">
+        <item name="colorAccent">@color/blue_25</item>                   <!--header background-->
+        <item name="android:windowBackground">@color/blue_25</item>     <!--calendar background-->
+        <item name="android:colorControlActivated">@color/light_blue_button_color</item> <!--selected day-->
+        <item name="android:textColorPrimary">@android:color/white</item> <!--days of the month-->
+        <item name="android:textColorSecondary">@color/black60</item>    <!--days of the week-->
+        <item name="android:background">@color/blue_25</item>     <!--calendar background-->
+        <item name="android:textSize">@dimen/_7sdp</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/background</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/background</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+</resources>
