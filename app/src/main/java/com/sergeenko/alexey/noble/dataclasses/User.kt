@@ -41,7 +41,8 @@ interface UserDao{
 data class Config(
     @PrimaryKey(autoGenerate = false)
     val id: String = "nobleConfig",
-    var selectedLanguageCode: String = "ru"
+    var selectedLanguageCode: String = "ru",
+    var countryCode: String = "ru"
 )
 
 @Dao

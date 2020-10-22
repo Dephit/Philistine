@@ -31,8 +31,8 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
             config = appComponent.getConfig() ?: Config()
             language.postValue(
                 appComponent.getLanguageDao()
-                    ?.getLanguage(config.selectedLanguageCode)
-                    ?.firstOrNull()
+                    .getLanguage(config.selectedLanguageCode)
+                    .firstOrNull()
                     ?.body ?: Language()
             )
         }

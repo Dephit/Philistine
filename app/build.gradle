@@ -39,6 +39,9 @@ android {
 }
 
 dependencies {
+
+    implementation 'com.hbb20:ccp:2.4.0'
+
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
@@ -69,6 +72,7 @@ dependencies {
     implementation 'com.karumi:dexter:6.2.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'com.github.dhaval2404:imagepicker:1.7.5'
 
     // Kotlin
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"

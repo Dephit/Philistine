@@ -10,7 +10,6 @@
         android:layout_width="@dimen/_59sdp"
         android:layout_height="@dimen/_22sdp"
         android:layout_marginTop="@dimen/_5sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
         android:background="@drawable/close_button_drawable"
         android:fontFamily="@font/gilroylight"
         android:insetLeft="0dp"

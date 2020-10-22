@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".NewClientActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/personal_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/screen_title">
+
+        <TextView
+            android:id="@+id/personal_info_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_17sdp"
+            android:fontFamily="@font/gillroy"
+            android:text="Личная информация"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/_8sdp"
+            app:layout_constraintStart_toEndOf="@+id/photo_image_view"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/photo_image_view"
+            android:layout_width="@dimen/_99sdp"
+            android:layout_height="@dimen/_99sdp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/new_client_picture_bg"
+            android:onClick="openPhotoSelector"
+            android:scaleType="centerCrop"
+            android:src="@drawable/new_photo_bg"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/photo_image_view"
+            app:layout_constraintEnd_toEndOf="@+id/photo_image_view"
+            app:layout_constraintStart_toStartOf="@+id/photo_image_view"
+            app:layout_constraintTop_toTopOf="@+id/photo_image_view"
+            app:layout_constraintVertical_bias="0.75">
+
+            <TextView
+                android:id="@+id/add_photo_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/gillroy"
+                android:text=" Добавить фото "
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/_7sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include
+            android:id="@+id/surname_input"
+            layout="@layout/measure_input"
+            android:layout_width="@dimen/_115sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_3sdp"
+            app:layout_constraintStart_toEndOf="@+id/client_name_input"
+            app:layout_constraintTop_toTopOf="@+id/client_name_input" />
+
+        <include
+            android:id="@+id/height_input"
+            layout="@layout/measure_input"
+            android:layout_width="@dimen/_71sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_3sdp"
+            app:layout_constraintStart_toEndOf="@+id/date_input"
+            app:layout_constraintTop_toTopOf="@+id/date_input" />
+
+        <include
+            android:id="@+id/weight_input"
+            layout="@layout/measure_input"
+            android:layout_width="@dimen/_71sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_3sdp"
+            app:layout_constraintStart_toEndOf="@+id/height_input"
+            app:layout_constraintTop_toTopOf="@+id/date_input" />
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/ccp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_3sdp"
+            app:ccpDialog_allowSearch="true"
+            app:ccpDialog_backgroundColor="@color/dark_blue_button_color"
+            app:ccpDialog_keyboardAutoPopup="false"
+            app:ccp_autoFormatNumber="true"
+            app:ccp_contentColor="@android:color/white"
+            app:ccp_defaultLanguage="RUSSIAN"
+            app:ccp_defaultNameCode="ru"
+            app:ccp_hintExampleNumber="true"
+            app:ccp_hintExampleNumberType="MOBILE"
+            app:ccp_showFlag="false"
+            app:ccp_showNameCode="false"
+            app:ccp_textSize="@dimen/_7sdp"
+            app:layout_constraintBottom_toBottomOf="@id/phone_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/weight_input"
+            app:layout_constraintTop_toTopOf="@id/phone_input"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <include
+            android:id="@+id/phone_input"
+            layout="@layout/measure_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ccp"
+            app:layout_constraintTop_toTopOf="@+id/date_input" />
+
+        <CheckBox
+            android:id="@+id/male_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_11sdp"
+            android:button="@drawable/sex_drawable"
+            android:checked="false"
+            android:drawableStart="@android:color/transparent"
+            android:drawablePadding="@dimen/_5sdp"
+            android:includeFontPadding="false"
+            android:text="Мужской"
+            android:textColor="@android:color/white"
+            android:textColorLink="@android:color/transparent"
+            android:textSize="@dimen/_7sdp"
+            app:layout_constraintBottom_toTopOf="@+id/date_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@+id/client_name_input"
+            app:layout_constraintTop_toBottomOf="@+id/client_name_input"
+            app:useMaterialThemeColors="false"
+            tools:text="Мужской" />
+
+        <CheckBox
+            android:id="@+id/woman_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_11sdp"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:button="@drawable/sex_drawable"
+            android:checked="false"
+            android:drawableStart="@android:color/transparent"
+            android:drawablePadding="@dimen/_5sdp"
+            android:includeFontPadding="false"
+            android:text="Женский"
+            android:textColor="@android:color/white"
+            android:textColorLink="@android:color/transparent"
+            android:textSize="@dimen/_7sdp"
+            app:layout_constraintBottom_toTopOf="@+id/date_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/male_check_box"
+            app:layout_constraintTop_toBottomOf="@+id/client_name_input"
+            app:useMaterialThemeColors="false"
+            tools:text="Мужской" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/date_input"
+            android:layout_width="@dimen/_115sdp"
+            android:layout_height="wrap_content"
+            android:alwaysDrawnWithCache="true"
+            android:drawingCacheQuality="auto"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="email"
+            android:inputType="textNoSuggestions"
+            android:scrollbarAlwaysDrawHorizontalTrack="false"
+            android:scrollbarAlwaysDrawVerticalTrack="false"
+            android:textColorHint="@color/black45"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="@dimen/_3sdp"
+            app:boxCornerRadiusBottomStart="@dimen/_3sdp"
+            app:boxCornerRadiusTopEnd="@dimen/_3sdp"
+            app:boxCornerRadiusTopStart="@dimen/_3sdp"
+            app:boxStrokeColor="@color/very_light_blue"
+            app:boxStrokeWidthFocused="1dp"
+            app:endIconDrawable="@drawable/ic_calendar_1"
+            app:endIconMode="custom"
+            app:endIconTintMode="screen"
+            app:errorEnabled="false"
+            app:errorIconDrawable="@drawable/ic_calendar_1"
+            app:errorIconTint="@android:color/transparent"
+            app:errorTextAppearance="@style/errorStyle"
+            app:helperTextEnabled="false"
+            app:hintAnimationEnabled="true"
+            app:hintEnabled="true"
+            app:hintTextAppearance="@style/HintLabel"
+            app:hintTextColor="@color/very_light_blue"
+            app:layout_constraintBottom_toBottomOf="@+id/photo_image_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@+id/client_name_input"
+            app:layout_constraintTop_toBottomOf="@+id/client_name_input"
+            app:layout_constraintVertical_bias="1"
+            app:passwordToggleEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/name_edit"
+                style="@style/MeasureTextInputStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_25sdp"
+                android:fontFamily="@font/gilroylight"
+                android:imeOptions="actionDone"
+                android:inputType="date"
+                android:lines="1"
+                android:maxLines="1"
+                android:paddingStart="@dimen/_4sdp"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="0dp"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/_8sdp" />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <include
+            android:id="@+id/client_name_input"
+            layout="@layout/measure_input"
+            android:layout_width="@dimen/_115sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_6sdp"
+            app:layout_constraintStart_toStartOf="@+id/personal_info_text"
+            app:layout_constraintTop_toBottomOf="@+id/personal_info_text" />
+
+        <include
+            android:id="@+id/patro_input"
+            layout="@layout/measure_input"
+            android:layout_width="@dimen/_119sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_3sdp"
+            app:layout_constraintStart_toEndOf="@+id/surname_input"
+            app:layout_constraintTop_toTopOf="@+id/surname_input" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/_9sdp"
+            android:background="@color/black5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/photo_image_view"
+            app:layout_constraintVertical_bias="0" />
+
+        <TextView
+            android:id="@+id/volume_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_7sdp"
+            android:fontFamily="@font/gillroy"
+            android:text="Volume"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/_8sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintVertical_bias="0" />
+
+        <include
+            android:id="@+id/left_hand_measure"
+            layout="@layout/measure_input"
+            android:layout_width="@dimen/_72sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_7sdp"
+            app:layout_constraintStart_toStartOf="@+id/volume_text"
+            app:layout_constraintTop_toBottomOf="@+id/volume_text" />
+
+        <include
+            android:id="@+id/left_hip_measure"
+            layout="@layout/measure_input"
+            android:layout_width="@dimen/_72sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
+            app:layout_constraintStart_toStartOf="@+id/volume_text"
+            app:layout_constraintTop_toBottomOf="@+id/left_hand_measure" />
+
+        <include
+            android:id="@+id/right_hip_measure"
+            layout="@layout/measure_input"
+            android:layout_width="@dimen/_72sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            app:layout_constraintStart_toEndOf="@+id/left_hip_measure"
+            app:layout_constraintTop_toBottomOf="@+id/left_hand_measure" />
+
+        <include
+            android:id="@+id/hips_measure"
+            layout="@layout/measure_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
+            app:layout_constraintEnd_toEndOf="@+id/chest_measure"
+            app:layout_constraintStart_toStartOf="@+id/waist_measure"
+            app:layout_constraintTop_toBottomOf="@+id/left_hand_measure" />
+
+        <include
+            android:id="@+id/right_hand_measure"
+            layout="@layout/measure_input"
+            android:layout_width="@dimen/_72sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_3sdp"
+            app:layout_constraintStart_toEndOf="@+id/left_hand_measure"
+            app:layout_constraintTop_toTopOf="@+id/left_hand_measure" />
+
+        <include
+            android:id="@+id/waist_measure"
+            layout="@layout/measure_input"
+            android:layout_width="@dimen/_72sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            app:layout_constraintStart_toEndOf="@+id/right_hand_measure"
+            app:layout_constraintTop_toTopOf="@+id/left_hand_measure" />
+
+        <include
+            android:id="@+id/chest_measure"
+            layout="@layout/measure_input"
+            android:layout_width="@dimen/_72sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_3sdp"
+            app:layout_constraintStart_toEndOf="@+id/waist_measure"
+            app:layout_constraintTop_toTopOf="@+id/waist_measure" />
+
+        <include
+            android:id="@+id/imt_param"
+            layout="@layout/measure_input"
+            android:layout_width="@dimen/_77sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_7sdp"
+            app:layout_constraintStart_toStartOf="@+id/params_text"
+            app:layout_constraintTop_toBottomOf="@+id/volume_text" />
+
+        <include
+            android:id="@+id/fat_param"
+            layout="@layout/measure_input"
+            android:layout_width="@dimen/_77sdp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_3sdp"
+            app:layout_constraintStart_toStartOf="@+id/params_text"
+            app:layout_constraintTop_toBottomOf="@+id/imt_param" />
+
+        <include
+            android:id="@+id/water_param"
+            layout="@layout/measure_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/fat_param"
+            app:layout_constraintTop_toBottomOf="@+id/imt_param" />
+
+        <include
+            android:id="@+id/muscle_param"
+            layout="@layout/measure_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_3sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imt_param"
+            app:layout_constraintTop_toTopOf="@+id/imt_param" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/_7sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:background="@color/black5"
+            app:layout_constraintBottom_toTopOf="@+id/divider3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/weight_input"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/chest_measure"
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+        <TextView
+            android:id="@+id/params_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_7sdp"
+            android:layout_marginTop="@dimen/_7sdp"
+            android:fontFamily="@font/gillroy"
+            android:text="Volume"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/_8sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/divider2"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintVertical_bias="0" />
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/_9sdp"
+            android:background="@color/black5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hips_measure"
+            app:layout_constraintVertical_bias="0" />
+
+        <Button
+            android:id="@+id/add_client_button"
+
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_marginTop="@dimen/_9sdp"
+            android:backgroundTint="@color/light_blue_button_color"
+            android:fontFamily="@font/gilroylight"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:isScrollContainer="false"
+            android:onClick="addClient"
+            android:text="add client"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/_10sdp"
+            android:textStyle="bold"
+            app:cornerRadius="@dimen/_5sdp"
+            app:icon="@drawable/ic_baseline_check_circle_outline_24"
+            app:iconGravity="textStart"
+            app:iconSize="@dimen/_10sdp"
+            app:iconTint="@android:color/transparent"
+            app:iconTintMode="add"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider3"
+            app:layout_constraintVertical_bias="0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/screen_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_9sdp"
+        android:fontFamily="@font/gillroy"
+        android:text="New Client"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/_11sdp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@+id/personal_data"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
+    <include
+        android:id="@+id/notification"
+        layout="@layout/notification_button"
+        android:layout_width="@dimen/_29sdp"
+        android:layout_height="@dimen/_22sdp"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/close_button"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
+    <include
+        android:id="@+id/close_button"
+        layout="@layout/close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/personal_data"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

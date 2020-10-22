@@ -56,6 +56,25 @@ interface NobleApi {
             @Field("api_sort") apiSort: String = Const.sortBySurname,
     ): Call<List<Client>>
 
+    @FormUrlEncoded
+    @POST("query/clients.php")
+    fun addClient(
+        @FieldMap fields: Map<String, String>,
+        @Field("api_key") apiKey: Int = Const.apiKey,
+        @Field("api_event") apiEvent: String = Const.clientAdd,
+        @Field("client_name") clientName: String,
+        @Field("client_sirname") client_sirname: String,
+        @Field("client_patronymic") client_patronymic: String? = null,
+        @Field("client_height") client_height: Int? = null,
+        @Field("client_weight") client_weight: Int? = null,
+        @Field("client_sex") client_sex: String? = null,
+        @Field("client_age") client_age: Long?,
+        @Field("client_visit") client_visit: String? = null,
+        @Field("client_phone") client_phone: String? = null,
+        @Field("client_measurements") client_measurements: String? = null,
+        @Field("client_foto") client_foto: String? = null,
+    ): Call<Int>
+
 
 }
 
@@ -67,9 +86,7 @@ class Const{
         const val clubGet = "club_get"
         const val clientGet = "client_get"
         const val clubPasswordRecovery = "club_password_recovery"
-
-
-
+        const val clientAdd = "client_add"
 
 
         const val sortBySurname = "sirname"

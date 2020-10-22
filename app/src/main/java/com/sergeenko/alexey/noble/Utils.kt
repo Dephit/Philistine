@@ -13,6 +13,21 @@ fun hideKeyboard(activity: Activity?) {
 
 fun getAgeFromLong(dateOfBirthLong: Long) = getDiffYears(dateOfBirthLong * 1000, Calendar.getInstance().time.time).toString()
 
+fun convertStringToDate(get: Int) = ("00${get}").substring(get.toString().length)
+
+fun longFromString(toString: String): Long {
+    val day = toString.substring(0, 2)
+    val month = toString.substring(3, 5)
+    val year = toString.substring(6, toString.length)
+
+    val cal = Calendar.getInstance()
+    cal.set(Calendar.YEAR, year.toInt())
+    cal.set(Calendar.MONTH, month.toInt() - 1)
+    cal.set(Calendar.DAY_OF_MONTH, day.toInt())
+
+    return cal.time.time / 1000
+}
+
 private fun getDiffYears(first: Long?, last: Long): Int {
     val a: Calendar = getCalendar(first)
     val b: Calendar = getCalendar(last)

@@ -12,8 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Noble"
+        android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true">
-        <activity android:name=".StartActivity"></activity>
+        <activity android:name=".NewClientActivity" />
+        <activity android:name=".StartActivity" />
         <activity android:name=".AgreementActivity" />
         <activity
             android:name=".PasswordRecoveryActivity"

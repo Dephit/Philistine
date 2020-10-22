@@ -33,7 +33,22 @@
         <item name="boxStrokeColor">@color/very_light_blue</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textColorHint">@color/black45</item>
+    </style>
 
+    <style name="MeasureTextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:background">@drawable/measur_bg</item>
+        <!--<item name="boxStrokeColor">@color/very_light_blue</item>&ndash;&gt;-->
+        <item name="colorBackgroundFloating">@color/black15</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@color/black60</item>
+    </style>
+
+    <style name="HintLabel" parent="Theme.AppCompat">
+        <item name="android:textColorHint">@color/very_light_blue</item>
+        <item name="colorAccent">@color/very_light_blue</item>
+        <item name="android:textSize">@dimen/_5sdp</item>
+        <item name="colorControlNormal">@color/very_light_blue</item>
+        <item name="colorControlActivated">@color/very_light_blue</item>
     </style>
 
 

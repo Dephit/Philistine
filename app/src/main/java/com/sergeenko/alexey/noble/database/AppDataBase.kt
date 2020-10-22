@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 import com.sergeenko.alexey.noble.converters.ClubConverter
 import com.sergeenko.alexey.noble.dataclasses.*
 
-@Database(entities = [User::class, LangList::class, Config::class, Client::class/*, Club::class*/], version = 28)
+@Database(entities = [User::class, LangList::class, Config::class, Client::class/*, Club::class*/], version = 29)
 @TypeConverters(
         LanguageConverter::class,
         ClubConverter::class

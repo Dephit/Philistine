@@ -13,7 +13,7 @@ import java.util.*
 @Entity
 data class Client(
     @PrimaryKey(autoGenerate = false)
-    val id: String = "1",
+    val id: String = "-1",
     val age: String?,
     val citate: String?,
     val club: String?,

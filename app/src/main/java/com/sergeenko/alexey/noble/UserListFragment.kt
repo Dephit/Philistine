@@ -37,6 +37,7 @@ class UserListFragment : Fragment() {
         search_edit.setOnFocusChangeListener { v, hasFocus ->
             search_input.setStartIconDrawable(if (hasFocus) R.drawable.ic_close else R.drawable.ic_search)
         }
+
         search_input.setStartIconOnClickListener {
             hideKeyboard(activity)
             search_edit.apply {

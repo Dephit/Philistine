@@ -25,7 +25,7 @@ interface AppComponent {
 
     fun getUser(): User?
     fun getLocaleLanguage(): Language
-    fun getConfig(): Config
+    fun getConfig(): Config?
     fun nobleApi(): NobleApi
     fun serviceInterceptor(): ServiceInterceptor
 
