@@ -2,6 +2,7 @@ package com.sergeenko.alexey.noble.dataclasses
 
 import androidx.room.*
 import com.sergeenko.alexey.noble.converters.ClubConverter
+import okhttp3.MultipartBody
 
 @Entity
 data class User(
@@ -18,6 +19,13 @@ data class User(
             "user_pass" to pass,
             "club_id" to club?.id.toString()
     )
+
+    @Ignore
+    fun getMultiPartField(): MutableList<MultipartBody.Part> = MultipartBody.Builder()
+            .addFormDataPart("user_email", email)
+            .addFormDataPart("user_pass", pass)
+            .addFormDataPart("club_id", club?.id.toString())
+            .build().parts()
 }
 
 @Dao

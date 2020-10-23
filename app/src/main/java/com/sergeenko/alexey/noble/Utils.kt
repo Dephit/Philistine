@@ -2,7 +2,11 @@ package com.sergeenko.alexey.noble
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
+import java.io.ByteArrayOutputStream
 import java.util.*
 
 fun hideKeyboard(activity: Activity?) {
@@ -44,4 +48,24 @@ private fun getCalendar(date: Long?): Calendar {
     val cal = Calendar.getInstance()
     cal.time = Date(date!!)
     return cal
+}
+
+fun Bitmap.toByteArray(): ByteArray{
+    val bao = ByteArrayOutputStream()
+    compress(Bitmap.CompressFormat.JPEG, 50, bao)
+    return bao.toByteArray()
+}
+
+fun String.stringToByteArray(): ByteArray?{
+    return try {
+        val split: List<String> = substring(1, length - 1).split(", ")
+        val array = ByteArray(split.size)
+        for (i in split.indices) {
+            array[i] = split[i].trim().toByte()
+        }
+        array
+    }catch (e: Exception){
+        null
+    }
+
 }

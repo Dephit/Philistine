@@ -37,10 +37,12 @@ class NewClientActivity : BaseActivity() {
         viewModel = ViewModelProvider(this).get(NewClientActivityViewModel::class.java)
         photo_image_view.clipToOutline = true
         male_check_box.setOnClickListener {
+            viewModel.sex = "man"
             male_check_box.isChecked = true
             woman_check_box.isChecked = false
         }
         woman_check_box.setOnClickListener {
+            viewModel.sex = "woman"
             male_check_box.isChecked = false
             woman_check_box.isChecked = true
         }

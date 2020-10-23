@@ -129,7 +129,6 @@ class UserListFragment : Fragment() {
             })
         }
     }
-
 }
 
 class ClientListAdapter(val language: Language, private val clients: List<Client>) : RecyclerView.Adapter<ClientListAdapter.ClientHolder>()  {
@@ -144,12 +143,20 @@ class ClientListAdapter(val language: Language, private val clients: List<Client
     override fun onBindViewHolder(holder: ClientHolder, position: Int) {
         holder.itemView.apply {
             clients[position].apply {
-                Picasso.with(context)
-                    .load("http://noble.gensol.ru/files/${foto}")
-                    .fit()
-                    .placeholder(R.drawable.client_image_place_holder)
-                    .error(R.drawable.client_image_place_holder)
-                    .into(user_picture)
+                if(!foto.isNullOrEmpty()){
+                    Picasso.with(context)
+                            .load("http://noble.gensol.ru/files/${foto}")
+                            .fit()
+                            .placeholder(R.drawable.client_image_place_holder)
+                            .error(R.drawable.client_image_place_holder)
+                            .into(user_picture)
+                } else if (bitmap != null){
+                    try {
+                        user_picture.setImageBitmap(bitmap)
+                    }catch (e: Exception){
+                        user_picture.setImageResource(R.drawable.client_image_place_holder)
+                    }
+                }
                 user_picture.clipToOutline = true
 
                 user_age.text = getClientAge(language)
@@ -161,6 +168,7 @@ class ClientListAdapter(val language: Language, private val clients: List<Client
             }
         }
     }
+
 
     override fun getItemCount() = clients.size
 

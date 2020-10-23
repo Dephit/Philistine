@@ -3,7 +3,15 @@ package com.sergeenko.alexey.noble
 import android.app.Application
 import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
+import com.sergeenko.alexey.noble.dataclasses.Client
+import com.sergeenko.alexey.noble.dataclasses.MEDIA_TYPE_PNG
+import kotlinx.coroutines.handleCoroutineException
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class NewClientActivityViewModel(application: Application) : BaseViewModel(application){
 
@@ -39,7 +47,39 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
         val isPhoneCorrect = isPhoneNotNull()
         val isAgeCorrect = isAgeNotNull()
         if(isAgeCorrect && isNameCorrect && isPhoneCorrect && isSurnameCorrect){
+            user?.getMultiPartField()?.let {
+                val client = Client(
+                        page_name = clientName,
+                        sirname = surname,
+                        patronymic = patronymic,
+                        age = age.toString(),
+                        phone = phone,
+                        sex = sex,
+                        bitmap = bitmap,
+                        weight = weight.toString(),
+                        height = clientHeight.toString()
+                )
+                api?.addClient(fields = it, body = client.getClientAddFormData())?.enqueue(
+                        object : Callback<Int> {
+                            override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                                if(response.isSuccessful){
+                                    client.id = response.body().toString()
+                                    addClientToDataBase(client)
+                                }
+                            }
 
+                            override fun onFailure(call: Call<Int>, t: Throwable) {
+                                
+                            }
+                        }
+                )
+            }
+        }
+    }
+
+    private fun addClientToDataBase(body: Client) {
+        viewModelScope.launch {
+            appComponent?.clientDao()?.insertClient(body)
         }
     }
 

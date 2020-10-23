@@ -6,10 +6,11 @@ import androidx.room.TypeConverters
 import com.sergeenko.alexey.noble.converters.ClubConverter
 import com.sergeenko.alexey.noble.dataclasses.*
 
-@Database(entities = [User::class, LangList::class, Config::class, Client::class/*, Club::class*/], version = 29)
+@Database(entities = [User::class, LangList::class, Config::class, Client::class/*, Club::class*/], version = 31)
 @TypeConverters(
         LanguageConverter::class,
-        ClubConverter::class
+        ClubConverter::class,
+        BitmapConvector::class
 )
 
 abstract class AppDatabase : RoomDatabase() {

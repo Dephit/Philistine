@@ -4,12 +4,10 @@ package com.sergeenko.alexey.noble
 import com.sergeenko.alexey.noble.dataclasses.Client
 import com.sergeenko.alexey.noble.dataclasses.Club
 import com.sergeenko.alexey.noble.dataclasses.Language
+import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.http.Field
-import retrofit2.http.FieldMap
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface NobleApi {
 
@@ -56,23 +54,17 @@ interface NobleApi {
             @Field("api_sort") apiSort: String = Const.sortBySurname,
     ): Call<List<Client>>
 
-    @FormUrlEncoded
+    @Multipart
     @POST("query/clients.php")
     fun addClient(
-        @FieldMap fields: Map<String, String>,
-        @Field("api_key") apiKey: Int = Const.apiKey,
-        @Field("api_event") apiEvent: String = Const.clientAdd,
-        @Field("client_name") clientName: String,
-        @Field("client_sirname") client_sirname: String,
-        @Field("client_patronymic") client_patronymic: String? = null,
-        @Field("client_height") client_height: Int? = null,
-        @Field("client_weight") client_weight: Int? = null,
-        @Field("client_sex") client_sex: String? = null,
-        @Field("client_age") client_age: Long?,
-        @Field("client_visit") client_visit: String? = null,
-        @Field("client_phone") client_phone: String? = null,
-        @Field("client_measurements") client_measurements: String? = null,
-        @Field("client_foto") client_foto: String? = null,
+            @Part apiKeys: MutableList<MultipartBody.Part> = MultipartBody.Builder()
+                    .addFormDataPart("api_key", Const.apiKey.toString())
+                    .addFormDataPart("api_event", Const.clientAdd)
+                    .build()
+                    .parts(),
+            @Part fields: MutableList<MultipartBody.Part>,
+            @Part body: MutableList<MultipartBody.Part>,
+        //@Field("client_foto") client_foto: String? = null,
     ): Call<Int>
 
 

@@ -97,7 +97,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/users_list"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_459sdp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/_5sdp"
         app:layout_constraintBottom_toBottomOf="parent"
