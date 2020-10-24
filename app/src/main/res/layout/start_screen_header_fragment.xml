@@ -13,7 +13,7 @@
         android:layout_height="@dimen/_26sdp"
         android:src="@drawable/ic_logo_vector"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/notification_button"
+        app:layout_constraintEnd_toStartOf="@+id/notification"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/connect_device"
         app:layout_constraintTop_toTopOf="@+id/connect_device"

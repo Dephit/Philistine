@@ -1,11 +1,18 @@
 package com.sergeenko.alexey.noble
 
+import android.app.ActionBar
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.PopupWindow
+import kotlinx.android.synthetic.main.activity_new_client.*
+import kotlinx.android.synthetic.main.calendar.view.*
 import java.io.ByteArrayOutputStream
 import java.util.*
 
@@ -67,5 +74,29 @@ fun String.stringToByteArray(): ByteArray?{
     }catch (e: Exception){
         null
     }
+}
 
+fun showCalendarView(context: Context, view: View, func: (day: Int, month: Int, year: Int)-> Unit) {
+    val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    val calendarView: View = inflater.inflate(R.layout.calendar, null)
+    val mPopupWindow = PopupWindow(calendarView, ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT)
+    mPopupWindow.elevation = 5.0f
+    mPopupWindow.isFocusable = true
+    mPopupWindow.isOutsideTouchable = true
+
+    calendarView.bg.setOnClickListener {
+        mPopupWindow.dismiss()
+    }
+    calendarView.close.setOnClickListener {
+        mPopupWindow.dismiss()
+    }
+    calendarView.confirm.setOnClickListener {
+        func(calendarView.datePicker.dayOfMonth, calendarView.datePicker.month, calendarView.datePicker.year)
+        mPopupWindow.dismiss()
+    }
+    try {
+        mPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
+    } catch (e: java.lang.Exception) {
+        Log.e("ERROR_SHOWING", e.toString())
+    }
 }

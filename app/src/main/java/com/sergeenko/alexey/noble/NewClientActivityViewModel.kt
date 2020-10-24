@@ -2,33 +2,26 @@ package com.sergeenko.alexey.noble
 
 import android.app.Application
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.hbb20.CountryCodePicker
 import com.sergeenko.alexey.noble.dataclasses.Client
-import com.sergeenko.alexey.noble.dataclasses.MEDIA_TYPE_PNG
-import kotlinx.coroutines.handleCoroutineException
+import com.sergeenko.alexey.noble.dataclasses.Measure
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class NewClientActivityViewModel(application: Application) : BaseViewModel(application){
 
-    var bitmap: Bitmap? = null
-    var age: Long? = null
-    var phone: String? = null
-    var clientName: String? = null
-    var surname: String? = null
-    var patronymic: String? = null
-    var sex: String? = null
-    var clientHeight: Int? = null
-    var weight: Int? = null
+    val client = Client()
+    private val measure = Measure()
 
     var dateInputError = MutableLiveData<Boolean>()
     var nameInputError = MutableLiveData<Boolean>()
     var phoneInputError = MutableLiveData<Boolean>()
     var surnameInputError = MutableLiveData<Boolean>()
+    var isClientSuccessivelyAdded = MutableLiveData<Boolean>()
 
     fun getDefaultPhoneCode(): String = config.countryCode
 
@@ -48,28 +41,19 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
         val isAgeCorrect = isAgeNotNull()
         if(isAgeCorrect && isNameCorrect && isPhoneCorrect && isSurnameCorrect){
             user?.getMultiPartField()?.let {
-                val client = Client(
-                        page_name = clientName,
-                        sirname = surname,
-                        patronymic = patronymic,
-                        age = age.toString(),
-                        phone = phone,
-                        sex = sex,
-                        bitmap = bitmap,
-                        weight = weight.toString(),
-                        height = clientHeight.toString()
-                )
                 api?.addClient(fields = it, body = client.getClientAddFormData())?.enqueue(
                         object : Callback<Int> {
                             override fun onResponse(call: Call<Int>, response: Response<Int>) {
                                 if(response.isSuccessful){
                                     client.id = response.body().toString()
+                                    client.bitmap = null
                                     addClientToDataBase(client)
+                                    isClientSuccessivelyAdded.postValue(true)
                                 }
                             }
 
                             override fun onFailure(call: Call<Int>, t: Throwable) {
-                                
+                                isClientSuccessivelyAdded.postValue(false)
                             }
                         }
                 )
@@ -83,27 +67,181 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
         }
     }
 
-    fun isSurnameNotNull(): Boolean {
-        surnameInputError.postValue(surname == null)
-        return surname != null
+    private fun isSurnameNotNull(): Boolean {
+        surnameInputError.postValue(client.sirname == null)
+        return client.sirname != null
     }
 
-    fun isClientNameNotNull(): Boolean {
-        nameInputError.postValue(clientName == null)
-        return clientName != null
+    private fun isClientNameNotNull(): Boolean {
+        nameInputError.postValue(client.page_name == null)
+        return client.page_name != null
     }
 
-    fun isAgeNotNull(): Boolean {
-        dateInputError.postValue(age == null)
-        return age != null
+    private fun isAgeNotNull(): Boolean {
+        dateInputError.postValue(client.age == null)
+        return client.age != null
     }
 
-    fun isPhoneNotNull(): Boolean {
-        phoneInputError.postValue(phone == null)
-        return phone != null
+    private fun isPhoneNotNull(): Boolean {
+        phoneInputError.postValue(client.phone == null)
+        return client.phone != null
     }
 
     fun setImage(bitmap: Bitmap?) {
-        this.bitmap = bitmap
+        client.bitmap = bitmap
     }
+
+    fun setAge(current: String) {
+        val ddmmgg = getLanguage()!!.ddmmgg
+        if(!current.contains(ddmmgg[0]) && !current.contains(ddmmgg[3]) && !current.contains(ddmmgg.last())){
+            try {
+                client.age = longFromString(current).toString()
+                isAgeNotNull()
+            }catch (e: Exception){
+                Log.e("AGE_EXCEPTION", e.message, e.fillInStackTrace())
+            }
+        }else {
+            client.age = null
+        }
+    }
+
+    fun setPhone(ccp: CountryCodePicker) {
+        if (ccp.isValidFullNumber) {
+            client.phone = ccp.fullNumber
+            isPhoneNotNull()
+        }else client.phone = null
+    }
+
+    fun setName(string: String) {
+        if (string.isNotEmpty()) {
+            client.page_name = string
+            isClientNameNotNull()
+        } else {
+            client.page_name = null
+        }
+    }
+
+    fun setSurname(string: String) {
+        if (string.isNotEmpty()) {
+            client.sirname = string
+            isSurnameNotNull()
+        } else {
+            client.sirname = null
+        }
+    }
+
+    fun setPatronymic(string: String) {
+        client.patronymic = string
+    }
+
+    fun setWeight(trim: String) {
+        client.weight = trim.toIntOrNull()?.toString()
+    }
+
+    fun setHeight(trim: String) {
+        client.height = trim.toIntOrNull()?.toString()
+    }
+
+    fun setSex(trim: String) {
+        client.sex = trim
+    }
+
+    fun setMeasureWeight(trim: String) {
+        trim.apply {
+            if(isNotEmpty()) {
+                measure.params.weight = toIntOrNull()
+                client.weight = toIntOrNull()?.toString()
+            }
+        }
+    }
+
+    fun setLeftHandVolume(trim: String) {
+        trim.apply {
+            if(isNotEmpty()) {
+                measure.measures.leftHandVolume = toIntOrNull()
+            }
+        }
+    }
+
+    fun setRightHandVolume(trim: String) {
+        trim.apply {
+            if(isNotEmpty()) {
+                measure.measures.rightHandVolume = toIntOrNull()
+            }
+        }
+    }
+
+    fun setLeftHipVolume(trim: String) {
+        trim.apply {
+            if(isNotEmpty()) {
+                measure.measures.leftHipVolume = toIntOrNull()
+            }
+        }
+    }
+
+    fun setRightHipVolume(trim: String) {
+        trim.apply {
+            if(isNotEmpty()) {
+                measure.measures.rightHipVolume = toIntOrNull()
+            }
+        }
+    }
+
+    fun setHipsVolume(trim: String) {
+        trim.apply {
+            if(isNotEmpty()) {
+                measure.measures.hipsVolume = toIntOrNull()
+            }
+        }
+    }
+
+    fun setWaistVolume(trim: String) {
+        trim.apply {
+            if(isNotEmpty()) {
+                measure.measures.waistVolume = toIntOrNull()
+            }
+        }
+    }
+
+    fun setChestVolume(trim: String) {
+        trim.apply {
+            if(isNotEmpty()) {
+                measure.measures.chestVolume = toIntOrNull()
+            }
+        }
+    }
+
+    fun setImt(trim: String) {
+        trim.apply {
+            if(isNotEmpty()) {
+                measure.params.imt = toIntOrNull()
+            }
+        }
+    }
+
+    fun setMuscleMass(trim: String) {
+        trim.apply {
+            if(isNotEmpty()) {
+                measure.params.muscleMass = toIntOrNull()
+            }
+        }
+    }
+
+    fun setFat(trim: String) {
+        trim.apply {
+            if(isNotEmpty()) {
+                measure.params.fatTisue = toIntOrNull()
+            }
+        }
+    }
+
+    fun setWater(trim: String) {
+        trim.apply {
+            if(isNotEmpty()) {
+                measure.params.waterInBody = toIntOrNull()
+            }
+        }
+    }
+
+
 }

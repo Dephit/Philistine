@@ -18,30 +18,30 @@ val MEDIA_TYPE_PNG = okhttp3.MediaType.parse("image/*")
 
 @Entity
 data class Client(
-    @PrimaryKey(autoGenerate = false)
+        @PrimaryKey(autoGenerate = false)
     var id: String = "-1",
-    val age: String? = null,
-    val citate: String? = null,
-    val club: String? = null,
-    val dateS: String? = null,
-    val foto: String? = null,
-    val height: String? = null,
-    val hit: String? = null,
-    val measurements: String? = null,
-    val page_name: String? = null,
-    val patronymic: String? = null,
-    val phone: String? = null,
-    val pos: String? = null,
-    val pos5: String? = null,
-    val sex: String? = null,
-    val sirname: String? = null,
-    val trainings: String? = null,
-    val url: String? = null,
-    val vis: String? = null,
-    val weight: String? = null,
-    val needToBeAdded: Boolean = false,
-    val needToBeEdited: Boolean = false,
-    @TypeConverters(BitmapConvector::class)
+        var age: String? = null,
+        val citate: String? = null,
+        val club: String? = null,
+        val dateS: String? = null,
+        val foto: String? = null,
+        var height: String? = null,
+        val hit: String? = null,
+        val measurements: String? = null,
+        var page_name: String? = null,
+        var patronymic: String? = null,
+        var phone: String? = null,
+        val pos: String? = null,
+        val pos5: String? = null,
+        var sex: String? = null,
+        var sirname: String? = null,
+        val trainings: String? = null,
+        val url: String? = null,
+        val vis: String? = null,
+        var weight: String? = null,
+        val needToBeAdded: Boolean = false,
+        val needToBeEdited: Boolean = false,
+        @TypeConverters(BitmapConvector::class)
     var bitmap: Bitmap? = null
 ){
     @Ignore

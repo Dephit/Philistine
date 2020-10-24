@@ -1,6 +1,7 @@
 package com.sergeenko.alexey.noble
 
 import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -127,6 +128,9 @@ class UserListFragment : Fragment() {
                     adapter = userAdapter
                 }
             })
+            onDataChanged.observe(viewLifecycleOwner, {
+                viewModel.searchClients(search_edit.text.toString())
+            })
         }
     }
 }
@@ -143,28 +147,21 @@ class ClientListAdapter(val language: Language, private val clients: List<Client
     override fun onBindViewHolder(holder: ClientHolder, position: Int) {
         holder.itemView.apply {
             clients[position].apply {
-                if(!foto.isNullOrEmpty()){
-                    Picasso.with(context)
-                            .load("http://noble.gensol.ru/files/${foto}")
-                            .fit()
-                            .placeholder(R.drawable.client_image_place_holder)
-                            .error(R.drawable.client_image_place_holder)
-                            .into(user_picture)
-                } else if (bitmap != null){
-                    try {
-                        user_picture.setImageBitmap(bitmap)
-                    }catch (e: Exception){
-                        user_picture.setImageResource(R.drawable.client_image_place_holder)
-                    }
-                }
+                Picasso.with(context)
+                        .load("http://noble.gensol.ru/files/${foto}")
+                        .fit()
+                        .placeholder(R.drawable.client_image_place_holder)
+                        .error(bitmap?.let {
+                            BitmapDrawable(resources, bitmap)
+                        } ?: context.getDrawable(R.drawable.client_image_place_holder))
+                        .into(user_picture)
+
                 user_picture.clipToOutline = true
 
                 user_age.text = getClientAge(language)
                 user_last_seen.text = getClientLastVisit()
                 user_name.text = getName()
-                setOnClickListener {
-
-                }
+                setOnClickListener {}
             }
         }
     }

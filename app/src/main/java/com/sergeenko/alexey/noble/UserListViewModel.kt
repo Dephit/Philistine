@@ -22,26 +22,26 @@ class UserListViewModel(application: Application) : BaseViewModel(application) {
             getClient()
         }
     }
-
+    val clientDao = appComponent!!.clientDao()
     val clientList = MutableLiveData<List<Client>>()
+    var onDataChanged = clientDao.getClientsLiveData()
 
     fun getClients(name: String = ""): List<Client>? = when(sortBy){
-            SortType.SirnameDesc -> appComponent?.clientDao()?.getClientsOrderBySirnameDesc(name)
-            SortType.SirnameAsc -> appComponent?.clientDao()?.getClientsOrderBySirnameAsc(name)
-            SortType.DateDesc -> appComponent?.clientDao()?.getClientsOrderByDateAsc(name)
-            SortType.DateAsc -> appComponent?.clientDao()?.getClientsOrderByDateDesc(name)
-        else -> appComponent?.clientDao()?.getClientsOrderBySirnameAsc(name)
+            SortType.SirnameDesc -> clientDao.getClientsOrderBySirnameDesc(name)
+            SortType.SirnameAsc -> clientDao.getClientsOrderBySirnameAsc(name)
+            SortType.DateDesc -> clientDao.getClientsOrderByDateAsc(name)
+            SortType.DateAsc -> clientDao.getClientsOrderByDateDesc(name)
+        else -> clientDao.getClientsOrderBySirnameAsc(name)
     }
 
     private fun getClient(){
-
         user?.getFieldMap()?.let {
             api?.getClients(it)?.enqueue(object : Callback<List<Client>> {
                 override fun onResponse(call: Call<List<Client>>, response: Response<List<Client>>) {
                     if(response.isSuccessful){
                         viewModelScope.launch {
                             response.body()?.map {client->
-                                appComponent?.clientDao()?.insertClient(client)
+                                clientDao.insertClient(client)
                             }
                             clientList.postValue(getClients())
                         }
@@ -51,7 +51,9 @@ class UserListViewModel(application: Application) : BaseViewModel(application) {
                 }
 
                 override fun onFailure(call: Call<List<Client>>, t: Throwable) {
-                    clientList.postValue(getClients())
+                    viewModelScope.launch {
+                        clientList.postValue(getClients())
+                    }
                 }
             })
         }
@@ -63,10 +65,7 @@ class UserListViewModel(application: Application) : BaseViewModel(application) {
             val list = mutableListOf<String>()
             val l = text.split(" ")
             for (i in 0 until 3){
-                list.add(
-                        if(l.size > i){
-                            l[i]
-                        }else ""
+                list.add(if(l.size > i){l[i]}else ""
                 )
             }
             val clList = getClients(list[0]) as MutableList<Client>
