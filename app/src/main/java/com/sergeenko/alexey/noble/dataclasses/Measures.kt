@@ -8,4 +8,13 @@ data class Measures(
     var rightHandVolume: Int? = null,
     var rightHipVolume: Int? = null,
     var waistVolume: Int? = null
-)
+){
+    fun isEmpty() = hipsVolume == null &&
+                    chestVolume == null &&
+                    leftHandVolume == null &&
+                    leftHipVolume == null &&
+                    rightHandVolume == null &&
+                    rightHipVolume == null &&
+                    waistVolume == null
+
+}

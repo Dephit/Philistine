@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import androidx.core.widget.addTextChangedListener
@@ -125,12 +128,12 @@ class NewClientActivity : BaseActivity() {
 
     private fun addTextWrapers(ddmmgg: String) {
         date_input.editText?.apply {
-            addTextChangedListener{
-                var current = ""
-                val ddmmyyyy = ddmmgg
-                val cal = Calendar.getInstance()
+            addTextChangedListener(object : TextWatcher {
+                private var current = ""
+                private val ddmmyyyy = ddmmgg
+                private val cal = Calendar.getInstance()
 
-                doOnTextChanged { p0, p1, p2, p3 ->
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     if (p0.toString() != current) {
                         var clean = p0.toString().replace("[^\\d.]|\\.".toRegex(), "")
                         val cleanC = current.replace("[^\\d.]|\\.", "")
@@ -177,11 +180,15 @@ class NewClientActivity : BaseActivity() {
                         else current.count())
                     }
                 }
-                doAfterTextChanged {
-                    viewModel.setAge(current)
-                }
-            }
 
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+
+                override fun afterTextChanged(p0: Editable) {
+                    viewModel.setAge(current, p0.toString())
+
+                }
+            })
         }
         client_name_input.name_input.editText?.addTextChangedListener(afterTextChanged = {s->
             viewModel.setName(s.toString().trim())

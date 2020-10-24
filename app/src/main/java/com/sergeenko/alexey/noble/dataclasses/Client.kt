@@ -27,7 +27,7 @@ data class Client(
         val foto: String? = null,
         var height: String? = null,
         val hit: String? = null,
-        val measurements: String? = null,
+        var measurements: String? = null,
         var page_name: String? = null,
         var patronymic: String? = null,
         var phone: String? = null,
@@ -38,6 +38,8 @@ data class Client(
         val trainings: String? = null,
         val url: String? = null,
         val vis: String? = null,
+        @TypeConverters(MeasureConvert::class)
+        var lastMeasure: Measure? = null,
         var weight: String? = null,
         val needToBeAdded: Boolean = false,
         val needToBeEdited: Boolean = false,
@@ -72,6 +74,17 @@ data class Client(
                 .parts()
 
     }
+    @Ignore
+    fun addNewMeasure(dateOfMeasure: Long? = null, measure: Measure) {
+        measure.dateOfMeasure = dateOfMeasure ?: Calendar.getInstance().time.time
+        lastMeasure = measure
+        measurements = JSONArray(measurements ?: "[]")
+                .put(MeasureConvert()
+                        .toJson(measure))
+                .toString()
+    }
+
+
 }
 
 @Dao

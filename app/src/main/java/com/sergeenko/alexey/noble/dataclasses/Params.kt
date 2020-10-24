@@ -6,4 +6,11 @@ data class Params(
         var muscleMass: Int? = null,
         var waterInBody: Int? = null,
         var weight: Int? = null
-)
+){
+
+    fun isEmpty() = imt == null &&
+            fatTisue == null &&
+            muscleMass == null &&
+            waterInBody == null &&
+            weight == null
+}

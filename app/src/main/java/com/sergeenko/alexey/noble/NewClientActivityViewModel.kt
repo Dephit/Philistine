@@ -4,10 +4,14 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.JsonArray
 import com.hbb20.CountryCodePicker
 import com.sergeenko.alexey.noble.dataclasses.Client
 import com.sergeenko.alexey.noble.dataclasses.Measure
+import com.sergeenko.alexey.noble.dataclasses.MeasureConvert
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,6 +45,9 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
         val isAgeCorrect = isAgeNotNull()
         if(isAgeCorrect && isNameCorrect && isPhoneCorrect && isSurnameCorrect){
             user?.getMultiPartField()?.let {
+                if(measure.isNotEmpty()){
+                    client.addNewMeasure(measure = measure)
+                }
                 api?.addClient(fields = it, body = client.getClientAddFormData())?.enqueue(
                         object : Callback<Int> {
                             override fun onResponse(call: Call<Int>, response: Response<Int>) {
@@ -77,7 +84,7 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
         return client.page_name != null
     }
 
-    private fun isAgeNotNull(): Boolean {
+    fun isAgeNotNull(): Boolean {
         dateInputError.postValue(client.age == null)
         return client.age != null
     }
@@ -91,7 +98,7 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
         client.bitmap = bitmap
     }
 
-    fun setAge(current: String) {
+    fun setAge(current: String, edittable: String) {
         val ddmmgg = getLanguage()!!.ddmmgg
         if(!current.contains(ddmmgg[0]) && !current.contains(ddmmgg[3]) && !current.contains(ddmmgg.last())){
             try {
@@ -150,7 +157,7 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
         trim.apply {
             if(isNotEmpty()) {
                 measure.params.weight = toIntOrNull()
-                client.weight = toIntOrNull()?.toString()
+                client.weight = toIntOrNull().toString()
             }
         }
     }
