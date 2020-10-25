@@ -4,6 +4,7 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.hbb20.CountryCodePicker
 import com.sergeenko.alexey.noble.dataclasses.Client
@@ -12,6 +13,7 @@ import com.sergeenko.alexey.noble.dataclasses.MeasureConvert
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
+import retrofit.RestAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -102,7 +104,8 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
         val ddmmgg = getLanguage()!!.ddmmgg
         if(!current.contains(ddmmgg[0]) && !current.contains(ddmmgg[3]) && !current.contains(ddmmgg.last())){
             try {
-                client.age = longFromString(current).toString()
+                client.age = longFromString(current)
+
                 isAgeNotNull()
             }catch (e: Exception){
                 Log.e("AGE_EXCEPTION", e.message, e.fillInStackTrace())

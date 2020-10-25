@@ -3,6 +3,7 @@ package com.sergeenko.alexey.noble.dataclasses
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.google.gson.Gson
+import java.io.Serializable
 import java.util.*
 
 data class Measure(
@@ -10,7 +11,7 @@ data class Measure(
         var dateOfMeasure: Long? = null,
         var measures: Measures = Measures(),
         var params: Params = Params()
-){
+): Serializable{
     fun isEmpty() = measures.isEmpty() && params.isEmpty()
 
     fun isNotEmpty() = !isEmpty()

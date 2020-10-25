@@ -1,5 +1,7 @@
 package com.sergeenko.alexey.noble.dataclasses
 
+import java.io.Serializable
+
 data class Measures(
     var hipsVolume: Int? = null,
     var chestVolume: Int? = null,
@@ -8,7 +10,7 @@ data class Measures(
     var rightHandVolume: Int? = null,
     var rightHipVolume: Int? = null,
     var waistVolume: Int? = null
-){
+): Serializable {
     fun isEmpty() = hipsVolume == null &&
                     chestVolume == null &&
                     leftHandVolume == null &&

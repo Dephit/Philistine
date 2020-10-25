@@ -13,7 +13,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.PopupWindow
 import kotlinx.android.synthetic.main.activity_new_client.*
 import kotlinx.android.synthetic.main.calendar.view.*
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
 import java.util.*
 
 fun hideKeyboard(activity: Activity?) {
@@ -99,4 +102,30 @@ fun showCalendarView(context: Context, view: View, func: (day: Int, month: Int, 
     } catch (e: java.lang.Exception) {
         Log.e("ERROR_SHOWING", e.toString())
     }
+}
+
+fun convertLongToTimeDDMMYY(time: Long) = convertLongToTimeWithFormat(time, SimpleDateFormat("dd.MM.yyyy") )
+
+fun convertLongToTimeDDMM(time: Long) = convertLongToTimeWithFormat(time, SimpleDateFormat("dd.MM"))
+
+private fun convertLongToTimeWithFormat(time: Long, format: SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy")): String {
+    Log.i("TIME_RAW", time.toString())
+    val date = Date(time * 1000)
+    Log.i("TIME_NOT_RAW", format.format(date))
+    return format.format(date)
+}
+
+fun replaceQuoits(get: String): String {
+    return try {
+        get
+            .replace("&quot;", "\"")
+            .replace("\\", "")
+            .replace("[\"{", "[{")
+            .replace("}\"]", "}]")
+            .replace("\"\"", "0")
+            .also { Log.i("REPLACE_SRING", JSONArray(it).toString()) }
+    }catch (e: Exception){
+        ""
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.sergeenko.alexey.noble
 
+import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -161,7 +163,12 @@ class ClientListAdapter(val language: Language, private val clients: List<Client
                 user_age.text = getClientAge(language)
                 user_last_seen.text = getClientLastVisit()
                 user_name.text = getName()
-                setOnClickListener {}
+                setOnClickListener {
+                    context.startActivity(
+                            Intent(context, ClientEditActivity::class.java)
+                                    .putExtra("client", this)
+                    )
+                }
             }
         }
     }

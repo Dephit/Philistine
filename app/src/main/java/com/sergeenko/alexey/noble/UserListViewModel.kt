@@ -1,7 +1,10 @@
 package com.sergeenko.alexey.noble
 
 import android.app.Application
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.sergeenko.alexey.noble.dataclasses.Client
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -41,6 +44,7 @@ class UserListViewModel(application: Application) : BaseViewModel(application) {
                     if(response.isSuccessful){
                         viewModelScope.launch {
                             response.body()?.map {client->
+                                client.measuresFromJson()
                                 clientDao.insertClient(client)
                             }
                             clientList.postValue(getClients())

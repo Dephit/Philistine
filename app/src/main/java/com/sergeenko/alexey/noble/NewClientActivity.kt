@@ -17,6 +17,7 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_new_client.*
 import kotlinx.android.synthetic.main.close_button.view.*
 import kotlinx.android.synthetic.main.measure_input.view.*
+import kotlinx.android.synthetic.main.personal_info_layout.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch

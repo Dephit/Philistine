@@ -67,7 +67,14 @@ interface NobleApi {
         //@Field("client_foto") client_foto: String? = null,
     ): Call<Int>
 
-
+    @FormUrlEncoded
+    @POST("query/clients.php")
+    fun deleteClient(
+            @FieldMap fields: Map<String, String>,
+            @Field("api_key") apiKey: Int = Const.apiKey,
+            @Field("api_event") apiEvent: String = Const.clientDelete,
+            @Field("client_id") clientId: String,
+    ): Call<Int>
 }
 
 class Const{
@@ -79,6 +86,7 @@ class Const{
         const val clientGet = "client_get"
         const val clubPasswordRecovery = "club_password_recovery"
         const val clientAdd = "client_add"
+        const val clientDelete = "client_delete"
 
 
         const val sortBySurname = "sirname"

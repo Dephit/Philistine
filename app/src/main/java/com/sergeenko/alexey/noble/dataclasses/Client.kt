@@ -2,16 +2,18 @@ package com.sergeenko.alexey.noble.dataclasses
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.widget.ImageView
-import androidx.databinding.BindingAdapter
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.sergeenko.alexey.noble.*
-import com.squareup.picasso.Picasso
+import com.google.gson.annotations.SerializedName
+import com.sergeenko.alexey.noble.getAgeFromLong
+import com.sergeenko.alexey.noble.stringToByteArray
+import com.sergeenko.alexey.noble.toByteArray
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONArray
-import java.io.ByteArrayOutputStream
+import java.io.Serializable
 import java.util.*
 
 val MEDIA_TYPE_PNG = okhttp3.MediaType.parse("image/*")
@@ -19,33 +21,36 @@ val MEDIA_TYPE_PNG = okhttp3.MediaType.parse("image/*")
 @Entity
 data class Client(
         @PrimaryKey(autoGenerate = false)
-    var id: String = "-1",
-        var age: String? = null,
-        val citate: String? = null,
-        val club: String? = null,
-        val dateS: String? = null,
-        val foto: String? = null,
+        var id: String = "-1",
+        var age: Long? = null,
+        var citate: String? = null,
+        var club: String? = null,
+        @SerializedName("dateS")
+        var dateS: String? = null,
+        var foto: String? = null,
         var height: String? = null,
-        val hit: String? = null,
+        var hit: String? = null,
         var measurements: String? = null,
+        @TypeConverters(MeasureListConvert::class)
+        var measurementsList: MutableList<Measure>? = null,
         var page_name: String? = null,
         var patronymic: String? = null,
         var phone: String? = null,
-        val pos: String? = null,
-        val pos5: String? = null,
+        var pos: String? = null,
+        var pos5: String? = null,
         var sex: String? = null,
         var sirname: String? = null,
-        val trainings: String? = null,
-        val url: String? = null,
-        val vis: String? = null,
+        var trainings: String? = null,
+        var url: String? = null,
+        var vis: String? = null,
         @TypeConverters(MeasureConvert::class)
         var lastMeasure: Measure? = null,
         var weight: String? = null,
-        val needToBeAdded: Boolean = false,
-        val needToBeEdited: Boolean = false,
+        var needToBeAdded: Boolean = false,
+        var needToBeEdited: Boolean = false,
         @TypeConverters(BitmapConvector::class)
-    var bitmap: Bitmap? = null
-){
+        var bitmap: Bitmap? = null
+): Serializable {
     @Ignore
     fun getName() = "${sirname ?: ""} ${page_name ?: ""}\n${patronymic ?: ""}"
 
@@ -53,7 +58,7 @@ data class Client(
     fun getClientAge(lang: Language) = age?.toLong()?.let { "${getAgeFromLong(it)} ${lang.years}" } ?: ""
 
     @Ignore
-    fun getClientLastVisit() = ""
+    fun getClientLastVisit() = dateS
 
     @Ignore
     fun getClientAddFormData(): MutableList<MultipartBody.Part> {
@@ -62,7 +67,7 @@ data class Client(
         sirname?.let { builder.addFormDataPart("client_sirname", it) }
         patronymic?.let { builder.addFormDataPart("client_patronymic", it) }
         sex?.let { builder.addFormDataPart("client_sex", it) }
-        age?.let { builder.addFormDataPart("client_age", it) }
+        age?.let { builder.addFormDataPart("client_age", it.toString()) }
         vis?.let { builder.addFormDataPart("client_visit", it) }
         phone?.let { builder.addFormDataPart("client_phone", it) }
         height?.let { builder.addFormDataPart("client_height", it) }
@@ -78,14 +83,19 @@ data class Client(
     fun addNewMeasure(dateOfMeasure: Long? = null, measure: Measure) {
         measure.dateOfMeasure = dateOfMeasure ?: Calendar.getInstance().time.time
         lastMeasure = measure
+        measurementsList?.add(measure)
         measurements = JSONArray(measurements ?: "[]")
                 .put(MeasureConvert()
                         .toJson(measure))
                 .toString()
     }
 
+    fun measuresFromJson() {
+        measurementsList = MeasureListConvert().stringToSomeObjectList(measurements)
+    }
 
 }
+
 
 @Dao
 interface ClientDao{
@@ -100,6 +110,9 @@ interface ClientDao{
 
     @Query("SELECT * FROM Client")
     fun getClientsLiveData(): LiveData<List<Client>>
+
+    @Query("SELECT * FROM Client WHERE id LIKE :id")
+    fun getClientById(id: String): Client
 
     /*@Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%'")
     fun getClients(name: String = ""): List<Client>*/
