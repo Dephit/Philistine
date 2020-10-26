@@ -17,14 +17,49 @@ import kotlinx.coroutines.launch
 class ClientEditActivity : BaseActivity() {
 
     lateinit var viewModel: ClientEditViewModel
+    var firstFragment: CliensEditFirstFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_client_edit)
         viewModel = ModelFactory(application, intent.getSerializableExtra("client") as Client).create(ClientEditViewModel::class.java)
         observeOnViewModel()
+        setFirstPage(client_cart)
     }
-//
+
+    fun setFirstPage(view: View) {
+        setSelectedTab(0)
+        if(firstFragment == null)
+            firstFragment = CliensEditFirstFragment.newInstance(viewModel.client)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_placement, firstFragment!!)
+            .commit()
+    }
+
+    private fun setSelectedTab(i: Int) {
+        client_cart.isActivated = i == 0
+        training_amount.isActivated = i == 1
+        measures.isActivated = i == 2
+    }
+
+    fun saveClientChanges(view: View){
+        firstFragment?.saveClientChanges()
+    }
+
+    fun setSecondPage(view: View) {
+        setSelectedTab(1)
+        /*supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_placement, CliensEditFirstFragment.newInstance())
+            .commit()*/
+    }
+
+    fun setThirdPage(view: View) {
+        setSelectedTab(2)
+        /*supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_placement, CliensEditFirstFragment.newInstance())
+            .commit()*/
+    }
+
     fun deleteClient(view: View){
         val lang = viewModel.getLanguage()
         val builder = AlertDialog.Builder(this)
@@ -64,6 +99,7 @@ class ClientEditActivity : BaseActivity() {
         language?.apply {
             created_text.text = "${created}: ${client.dateS?.toLongOrNull()?.let { date -> convertLongToTimeDDMMYY(date) }}"
 
+            this@ClientEditActivity.client_cart.text = client_cart
             measure_error_layout.visibility = if(!client.trainings.isNullOrEmpty()) View.VISIBLE else View.GONE
             textView22.text = you_need_to_make_measure
             last_measure_date.text = client.lastMeasure?.dateOfMeasure?.let { convertLongToTimeDDMMYY(it) } ?: no_data
@@ -71,9 +107,6 @@ class ClientEditActivity : BaseActivity() {
             make_measure_btn.text = make_measure
             training_amount.text = "${trainings_total_amount}: ${client.measurementsList?.size}"
             this@ClientEditActivity.measures.text = measures
-
-            client.measurementsList?.size?.let { Toast.makeText(this@ClientEditActivity, it.toString(), Toast.LENGTH_SHORT).show() }
-
         }
     }
 }

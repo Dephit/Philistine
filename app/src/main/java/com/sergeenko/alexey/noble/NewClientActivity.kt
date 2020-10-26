@@ -1,28 +1,37 @@
 package com.sergeenko.alexey.noble
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputLayout
+import com.hbb20.CountryCodePicker
+import com.sergeenko.alexey.noble.dataclasses.Language
 import kotlinx.android.synthetic.main.activity_new_client.*
 import kotlinx.android.synthetic.main.close_button.view.*
 import kotlinx.android.synthetic.main.measure_input.view.*
+import kotlinx.android.synthetic.main.measure_input.view.name_edit
 import kotlinx.android.synthetic.main.personal_info_layout.*
+import kotlinx.android.synthetic.main.personal_info_layout.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.*
+import kotlinx.android.synthetic.main.personal_info_layout.personal_info
+import kotlinx.android.synthetic.main.personal_info_layout.view.ccp
 
 class NewClientActivity : BaseActivity() {
 
@@ -32,82 +41,33 @@ class NewClientActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_client)
         viewModel = ViewModelProvider(this).get(NewClientActivityViewModel::class.java)
-        photo_image_view.clipToOutline = true
-        male_check_box.setOnClickListener {
-            viewModel.setSex("man")
-            male_check_box.isChecked = true
-            woman_check_box.isChecked = false
-        }
-        woman_check_box.setOnClickListener {
-            viewModel.setSex("woman")
-            male_check_box.isChecked = false
-            woman_check_box.isChecked = true
-        }
-        date_input.setEndIconOnClickListener {
-            showCalendar()
-        }
+        add_photo_text.visibility = View.VISIBLE
+        replace_image_layout.visibility = View.INVISIBLE
         observeOnView()
-    }
-
-    @SuppressLint("SetTextI18n", "InflateParams")
-    private fun showCalendar() {
-        showCalendarView(this, layout) { day, month, year ->
-            date_input.editText?.setText("${convertStringToDate(day)}.${convertStringToDate(month + 1)}.$year")
-        }
     }
 
     fun addClient(view:View){
         viewModel.addClient()
     }
 
-    private fun cppSetUp() {
-        phone_input.name_input.name_edit.apply {
-            setOnFocusChangeListener { v, hasFocus ->
-                if(hasFocus) ccp.registerCarrierNumberEditText(this) else ccp.deregisterCarrierNumberEditText()
-            }
-            addTextChangedListener { doOnTextChanged { _, _, _, _ -> viewModel.setPhone(ccp) }}
-            ccp.setCountryForNameCode(viewModel.getDefaultPhoneCode())
-            ccp.setOnCountryChangeListener{
-                viewModel.updateCountryCode(ccp.selectedCountryNameCode)
-                ccp.registerCarrierNumberEditText(this)
-                setText("")
-            }
-        }
-    }
-
     private fun observeOnView() {
         viewModel.apply {
             language.observe(this@NewClientActivity, {
-                cppSetUp()
                 it.apply {
-                    personal_info_text.text = add_new_client_button_text
-                    add_photo_text.text = add_photo
-                    this@NewClientActivity.volume_text.text = volume_text
-                    params_text.text = params
                     close_button.button.text = close
 
-                    surname_input.name_input.hint(surname)
-                    client_name_input.name_input.hint(name)
-                    patro_input.name_input.hint( second_name)
-                    date_input.hint( birthday)
-                    height_input.name_input.hint( height)
-                    weight_input.name_input.hint( weight)
-                    phone_input.name_input.hint( phone)
-                    male_check_box.text = male
-                    woman_check_box.text = female
-                    phone_input.name_input.hint( phone)
-
-                    left_hand_measure.name_input.hint( left_hand)
-                    right_hand_measure.name_input.hint( right_hand)
-                    left_hip_measure.name_input.hint( left_hip)
-                    right_hip_measure.name_input.hint( right_hip)
-                    hips_measure.name_input.hint( hips)
-                    waist_measure.name_input.hint( waist)
-                    chest_measure.name_input.hint( chest)
-                    water_param.name_input.hint( water2)
-                    imt_param.name_input.hint( imt)
-                    fat_param.name_input.hint( fat)
-                    muscle_param.name_input.hint( muscle_mass)
+                    personal_info.setPersonalInfo(viewModel,this)
+                    left_hand_measure.name_input.hint(left_hand)
+                    right_hand_measure.name_input.hint(right_hand)
+                    left_hip_measure.name_input.hint(left_hip)
+                    right_hip_measure.name_input.hint(right_hip)
+                    hips_measure.name_input.hint(hips)
+                    waist_measure.name_input.hint(waist)
+                    chest_measure.name_input.hint(chest)
+                    water_param.name_input.hint(water2)
+                    imt_param.name_input.hint(imt)
+                    fat_param.name_input.hint(fat)
+                    muscle_param.name_input.hint(muscle_mass)
                     add_client_button.text = add_client
                     addTextWrapers(ddmmgg)
                 }
@@ -128,86 +88,6 @@ class NewClientActivity : BaseActivity() {
     }
 
     private fun addTextWrapers(ddmmgg: String) {
-        date_input.editText?.apply {
-            addTextChangedListener(object : TextWatcher {
-                private var current = ""
-                private val ddmmyyyy = ddmmgg
-                private val cal = Calendar.getInstance()
-
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    if (p0.toString() != current) {
-                        var clean = p0.toString().replace("[^\\d.]|\\.".toRegex(), "")
-                        val cleanC = current.replace("[^\\d.]|\\.", "")
-
-                        val cl = clean.length
-                        var sel = selectionEnd
-
-                        var i = 2
-
-                        if (clean == cleanC) sel--
-
-                        if (clean.length < 8) {
-                            clean += ddmmyyyy.substring(clean.length)
-                        } else {
-                            var day = Integer.parseInt(clean.substring(0, 2))
-                            var mon = Integer.parseInt(clean.substring(2, 4))
-                            var year = Integer.parseInt(clean.substring(4, 8))
-
-                            mon = if (mon < 1) 1 else if (mon > 12) 12 else mon
-                            cal.set(Calendar.MONTH, mon - 1)
-                            year = if (year < 1900) 1900 else if (year > cal.get(Calendar.YEAR)) cal.get(Calendar.YEAR) else year
-                            cal.set(Calendar.YEAR, year)
-
-                            day = if (day > cal.getActualMaximum(Calendar.DATE)) cal.getActualMaximum(Calendar.DATE) else day
-                            clean = String.format("%02d%02d%02d", day, mon, year)
-                        }
-
-                        clean = String.format("%s.%s.%s", clean.substring(0, 2),
-                                clean.substring(2, 4),
-                                clean.substring(4, 8))
-
-                        sel = if (sel < 0) 0 else sel
-                        current = clean
-                        if(sel == 2 && p0!!.length > 10)
-                            sel = 3
-                        else if(sel == 3 && p0!!.length == 10)
-                            sel = 2
-                        else if(sel == 5 && p0!!.length > 10)
-                            sel = 6
-                        else if(sel == 6  && p0!!.length == 10)
-                            sel = 5
-                        setText(current)
-                        setSelection(if (sel < current.count()) sel
-                        else current.count())
-                    }
-                }
-
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                }
-
-                override fun afterTextChanged(p0: Editable) {
-                    viewModel.setAge(current, p0.toString())
-
-                }
-            })
-        }
-        client_name_input.name_input.editText?.addTextChangedListener(afterTextChanged = {s->
-            viewModel.setName(s.toString().trim())
-        })
-        surname_input.name_input.editText?.addTextChangedListener(afterTextChanged = {s->
-            viewModel.setSurname(s.toString().trim())
-        })
-        patro_input.name_input.editText?.addTextChangedListener(afterTextChanged = {s->
-            viewModel.setPatronymic(s.toString().trim())
-        })
-        weight_input.name_input.editText?.addTextChangedListener(afterTextChanged = {s->
-            viewModel.setWeight(s.toString().trim())
-
-        })
-        height_input.name_input.editText?.addTextChangedListener(afterTextChanged = {s->
-            viewModel.setHeight(s.toString().trim())
-        })
-
         left_hand_measure.name_input.editText?.addTextChangedListener(afterTextChanged = {s->
             viewModel.setLeftHandVolume(s.toString().trim())
         })
@@ -260,7 +140,10 @@ class NewClientActivity : BaseActivity() {
                 viewModel.setImage(bitmap)
                 photo_image_view.setImageBitmap(bitmap)
                 add_photo_text.visibility = View.INVISIBLE
+                replace_image_layout.visibility = View.VISIBLE
             } catch (e: IOException) {
+                replace_image_layout.visibility = View.INVISIBLE
+                add_photo_text.visibility = View.VISIBLE
                 e.printStackTrace()
             }
 
@@ -285,4 +168,3 @@ fun TextInputLayout.hint(string: String){
         hint = string
     }
 }
-

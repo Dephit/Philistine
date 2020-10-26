@@ -18,7 +18,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class NewClientActivityViewModel(application: Application) : BaseViewModel(application){
+class NewClientActivityViewModel(application: Application) : BaseViewModel(application), ClientInfoInput{
 
     val client = Client()
     private val measure = Measure()
@@ -29,9 +29,16 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
     var surnameInputError = MutableLiveData<Boolean>()
     var isClientSuccessivelyAdded = MutableLiveData<Boolean>()
 
-    fun getDefaultPhoneCode(): String = config.countryCode
+    override fun setPhone(ccp: CountryCodePicker?) {
+        if (ccp!!.isValidFullNumber) {
+            client.phone = ccp.fullNumber
+            isPhoneNotNull()
+        }else client.phone = null
+    }
 
-    fun updateCountryCode(selectedCountryNameCode: String?) {
+    override fun getDefaultPhoneCode(): String = config.countryCode
+
+    override fun updateCountryCode(selectedCountryNameCode: String?) {
         viewModelScope.launch {
             selectedCountryNameCode?.let{
                 config.countryCode = it
@@ -76,22 +83,22 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
         }
     }
 
-    private fun isSurnameNotNull(): Boolean {
+    override fun isSurnameNotNull(): Boolean {
         surnameInputError.postValue(client.sirname == null)
         return client.sirname != null
     }
 
-    private fun isClientNameNotNull(): Boolean {
+    override fun isClientNameNotNull(): Boolean {
         nameInputError.postValue(client.page_name == null)
         return client.page_name != null
     }
 
-    fun isAgeNotNull(): Boolean {
+    override fun isAgeNotNull(): Boolean {
         dateInputError.postValue(client.age == null)
         return client.age != null
     }
 
-    private fun isPhoneNotNull(): Boolean {
+    override fun isPhoneNotNull(): Boolean {
         phoneInputError.postValue(client.phone == null)
         return client.phone != null
     }
@@ -100,7 +107,7 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
         client.bitmap = bitmap
     }
 
-    fun setAge(current: String, edittable: String) {
+    override fun setAge(current: String, edittable: String) {
         val ddmmgg = getLanguage()!!.ddmmgg
         if(!current.contains(ddmmgg[0]) && !current.contains(ddmmgg[3]) && !current.contains(ddmmgg.last())){
             try {
@@ -115,14 +122,7 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
         }
     }
 
-    fun setPhone(ccp: CountryCodePicker) {
-        if (ccp.isValidFullNumber) {
-            client.phone = ccp.fullNumber
-            isPhoneNotNull()
-        }else client.phone = null
-    }
-
-    fun setName(string: String) {
+    override fun setName(string: String) {
         if (string.isNotEmpty()) {
             client.page_name = string
             isClientNameNotNull()
@@ -131,7 +131,7 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
         }
     }
 
-    fun setSurname(string: String) {
+    override fun setSurname(string: String) {
         if (string.isNotEmpty()) {
             client.sirname = string
             isSurnameNotNull()
@@ -140,19 +140,19 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
         }
     }
 
-    fun setPatronymic(string: String) {
+    override fun setPatronymic(string: String) {
         client.patronymic = string
     }
 
-    fun setWeight(trim: String) {
+    override fun setWeight(trim: String) {
         client.weight = trim.toIntOrNull()?.toString()
     }
 
-    fun setHeight(trim: String) {
+    override fun setHeight(trim: String) {
         client.height = trim.toIntOrNull()?.toString()
     }
 
-    fun setSex(trim: String) {
+    override fun setSex(trim: String) {
         client.sex = trim
     }
 

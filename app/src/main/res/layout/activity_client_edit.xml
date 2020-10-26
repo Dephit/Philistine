@@ -117,8 +117,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/personal_data"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -239,12 +240,13 @@
 
             <Button
                 android:id="@+id/training_amount"
-                android:layout_width="@dimen/_153sdp"
+                android:layout_width="@dimen/_157sdp"
                 android:layout_height="@dimen/_22sdp"
                 android:background="@drawable/tab_drawable"
                 android:fontFamily="@font/gilroylight"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
+                android:onClick="setSecondPage"
                 android:text="Тренировок: 23"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
@@ -258,12 +260,13 @@
 
             <Button
                 android:id="@+id/client_cart"
-                android:layout_width="@dimen/_153sdp"
+                android:layout_width="@dimen/_157sdp"
                 android:layout_height="@dimen/_22sdp"
                 android:background="@drawable/left_tab_drawable"
                 android:fontFamily="@font/gilroylight"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
+                android:onClick="setFirstPage"
                 android:text="Карточка клиента"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
@@ -277,12 +280,13 @@
 
             <Button
                 android:id="@+id/measures"
-                android:layout_width="@dimen/_154sdp"
+                android:layout_width="@dimen/_157sdp"
                 android:layout_height="@dimen/_22sdp"
                 android:background="@drawable/right_tab_drawable"
                 android:fontFamily="@font/gilroylight"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
+                android:onClick="setThirdPage"
                 android:text="Замеры"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
@@ -295,5 +299,19 @@
                 app:layout_constraintVertical_bias="0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_placement"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/train_chosen_layout"
+            app:layout_constraintVertical_bias="0">
+
+        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
