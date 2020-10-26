@@ -64,7 +64,18 @@ interface NobleApi {
                     .parts(),
             @Part fields: MutableList<MultipartBody.Part>,
             @Part body: MutableList<MultipartBody.Part>,
-        //@Field("client_foto") client_foto: String? = null,
+    ): Call<Int>
+
+    @Multipart
+    @POST("query/clients.php")
+    fun editClient(
+        @Part apiKeys: MutableList<MultipartBody.Part> = MultipartBody.Builder()
+            .addFormDataPart("api_key", Const.apiKey.toString())
+            .addFormDataPart("api_event", Const.clientRedact)
+            .build()
+            .parts(),
+        @Part fields: MutableList<MultipartBody.Part>,
+        @Part body: MutableList<MultipartBody.Part>,
     ): Call<Int>
 
     @FormUrlEncoded
@@ -87,7 +98,7 @@ class Const{
         const val clubPasswordRecovery = "club_password_recovery"
         const val clientAdd = "client_add"
         const val clientDelete = "client_delete"
-
+        const val clientRedact = "client_redact"
 
         const val sortBySurname = "sirname"
         const val sortByDate = "dateS"

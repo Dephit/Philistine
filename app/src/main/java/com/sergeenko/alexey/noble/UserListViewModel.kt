@@ -44,7 +44,7 @@ class UserListViewModel(application: Application) : BaseViewModel(application) {
                     if(response.isSuccessful){
                         viewModelScope.launch {
                             response.body()?.map {client->
-                                client.measuresFromJson()
+                                client.getLastSession()
                                 clientDao.insertClient(client)
                             }
                             clientList.postValue(getClients())

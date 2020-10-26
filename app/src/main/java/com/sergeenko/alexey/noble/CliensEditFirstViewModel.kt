@@ -1,12 +1,16 @@
 package com.sergeenko.alexey.noble
 
 import android.app.Application
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hbb20.CountryCodePicker
 import com.sergeenko.alexey.noble.dataclasses.Client
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class CliensEditFirstViewModel(application: Application,val client: Client) : BaseViewModel(application), ClientInfoInput {
 
@@ -14,6 +18,8 @@ class CliensEditFirstViewModel(application: Application,val client: Client) : Ba
     var nameInputError = MutableLiveData<Boolean>()
     var phoneInputError = MutableLiveData<Boolean>()
     var surnameInputError = MutableLiveData<Boolean>()
+
+    var isClientSuccessivelyAdded = MutableLiveData<Boolean>()
 
     override fun setPhone(ccp: CountryCodePicker?) {
         if (ccp!!.isValidFullNumber) {
@@ -99,6 +105,36 @@ class CliensEditFirstViewModel(application: Application,val client: Client) : Ba
     override fun isPhoneNotNull(): Boolean {
         phoneInputError.postValue(client.phone == null)
         return client.phone != null
+    }
+
+    fun saveClientChanges() {
+        user?.getMultiPartField()?.let {
+            api?.editClient(fields = it, body = client.getClientAddFormData())?.enqueue(
+                object : Callback<Int> {
+                    override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                        if(response.isSuccessful){
+                            client.bitmap = null
+                            addClientToDataBase(client)
+                            isClientSuccessivelyAdded.postValue(true)
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Int>, t: Throwable) {
+                        isClientSuccessivelyAdded.postValue(false)
+                    }
+                }
+            )
+        }
+    }
+
+    private fun addClientToDataBase(client: Client) {
+        viewModelScope.launch {
+            appComponent?.clientDao()?.updateClient(client)
+        }
+    }
+
+    fun setImage(bitmap: Bitmap?) {
+        client.bitmap = bitmap
     }
 
 }

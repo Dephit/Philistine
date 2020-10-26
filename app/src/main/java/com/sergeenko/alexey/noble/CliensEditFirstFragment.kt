@@ -1,5 +1,6 @@
 package com.sergeenko.alexey.noble
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -43,14 +44,23 @@ class CliensEditFirstFragment : BaseFragment() {
             language.observe(viewLifecycleOwner, {
                 personal_info.setPersonalInfo(viewModel, it)
                 personal_info.fillPersonalInfo(client)
-
                 save_changes_button.text = it.save
+            })
+            isClientSuccessivelyAdded.observe(viewLifecycleOwner, {
+                if(it)
+                    activity?.onBackPressed()
+                else
+                    Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             })
         }
     }
 
     fun saveClientChanges() {
+        viewModel.saveClientChanges()
+    }
 
+    fun setImage(bitmap: Bitmap?) {
+        viewModel.setImage(bitmap)
     }
 
 

@@ -6,13 +6,13 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import com.sergeenko.alexey.noble.getAgeFromLong
-import com.sergeenko.alexey.noble.stringToByteArray
-import com.sergeenko.alexey.noble.toByteArray
+import com.sergeenko.alexey.noble.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONArray
+import org.json.JSONObject
 import java.io.Serializable
 import java.util.*
 
@@ -27,12 +27,15 @@ data class Client(
         var club: String? = null,
         @SerializedName("dateS")
         var dateS: String? = null,
+        var lastVisit: String? = null,
         var foto: String? = null,
         var height: String? = null,
         var hit: String? = null,
         var measurements: String? = null,
         @TypeConverters(MeasureListConvert::class)
         var measurementsList: MutableList<Measure>? = null,
+        @TypeConverters(TrainingListConvert::class)
+        var trainingList: MutableList<TrainingItem>? = null,
         var page_name: String? = null,
         var patronymic: String? = null,
         var phone: String? = null,
@@ -58,11 +61,17 @@ data class Client(
     fun getClientAge(lang: Language) = age?.toLong()?.let { "${getAgeFromLong(it)} ${lang.years}" } ?: ""
 
     @Ignore
-    fun getClientLastVisit() = dateS
+    fun getClientLastVisit(lang: Language) = lastVisit?.let {
+        "${if(sex == "woman") lang.she_was else lang.he_was}: ${convertLongToTimeDDMM(it.toLong())}"}
+
+    fun lastVisit() = trainingList?.lastOrNull()?.dateOfTraining
 
     @Ignore
     fun getClientAddFormData(): MutableList<MultipartBody.Part> {
         val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
+        if(id.toInt() > 0) {
+            builder.addFormDataPart("client_id", id)
+        }
         page_name?.let { builder.addFormDataPart("client_name", it) }
         sirname?.let { builder.addFormDataPart("client_sirname", it) }
         patronymic?.let { builder.addFormDataPart("client_patronymic", it) }
@@ -94,6 +103,20 @@ data class Client(
         measurementsList = MeasureListConvert().stringToSomeObjectList(measurements)
     }
 
+    fun trainings() {
+        trainingList = TrainingListConvert().stringObjectList(trainings)
+        lastVisit = lastVisit()?.toString()
+    }
+
+    fun getLastSession() {
+        try {
+            val a = trainings?.substring(trainings!!.lastIndexOf("{\"muscles\""), trainings!!.lastIndexOf("]"))
+            lastVisit = Gson().fromJson(a, TrainingItem::class.java).dateOfTraining.toString()
+        }catch (e: Exception){
+
+        }
+    }
+
 }
 
 
@@ -114,19 +137,16 @@ interface ClientDao{
     @Query("SELECT * FROM Client WHERE id LIKE :id")
     fun getClientById(id: String): Client
 
-    /*@Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%'")
-    fun getClients(name: String = ""): List<Client>*/
-
-    @Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%' ORDER BY sirname  ASC")
+    @Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%' ORDER BY sirname ASC")
     fun getClientsOrderBySirnameAsc(name: String = ""): List<Client>
 
-    @Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%' ORDER BY sirname  DESC")
+    @Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%' ORDER BY sirname DESC")
     fun getClientsOrderBySirnameDesc(name: String = ""): List<Client>
 
-    @Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%' ORDER BY dateS  ASC")
+    @Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%' ORDER BY lastVisit ASC")
     fun getClientsOrderByDateAsc(name: String = ""): List<Client>
 
-    @Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%' ORDER BY dateS  DESC")
+    @Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%' ORDER BY lastVisit DESC")
     fun getClientsOrderByDateDesc(name: String = ""): List<Client>
 }
 

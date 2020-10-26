@@ -161,7 +161,7 @@ class ClientListAdapter(val language: Language, private val clients: List<Client
                 user_picture.clipToOutline = true
 
                 user_age.text = getClientAge(language)
-                user_last_seen.text = getClientLastVisit()
+                user_last_seen.text = getClientLastVisit(language)
                 user_name.text = getName()
                 setOnClickListener {
                     context.startActivity(

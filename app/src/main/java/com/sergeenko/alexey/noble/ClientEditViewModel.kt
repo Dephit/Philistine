@@ -12,6 +12,11 @@ class ClientEditViewModel(application: Application, val client: Client): BaseVie
 
     val isClientDeleted = MutableLiveData<Boolean>()
 
+    init {
+        client.measuresFromJson()
+        client.trainings()
+    }
+
     fun deleteClient() {
         viewModelScope.launch {
             api?.deleteClient(user!!.getFieldMap(), clientId = client.id)?.enqueue(

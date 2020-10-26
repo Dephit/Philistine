@@ -1,7 +1,9 @@
 package com.sergeenko.alexey.noble
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -9,15 +11,19 @@ import com.sergeenko.alexey.noble.dataclasses.Client
 import com.sergeenko.alexey.noble.dataclasses.Language
 import kotlinx.android.synthetic.main.activity_client_edit.*
 import kotlinx.android.synthetic.main.close_button.view.*
+import kotlinx.android.synthetic.main.personal_info_layout.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 
 class ClientEditActivity : BaseActivity() {
 
     lateinit var viewModel: ClientEditViewModel
     var firstFragment: CliensEditFirstFragment? = null
+    var secondFragment: ClientsEditSecondPage? = null
+    var thirdFragment: ClientsEditSecondPage? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +31,25 @@ class ClientEditActivity : BaseActivity() {
         viewModel = ModelFactory(application, intent.getSerializableExtra("client") as Client).create(ClientEditViewModel::class.java)
         observeOnViewModel()
         setFirstPage(client_cart)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK){
+            try {
+                val selectedImage = data?.data!!
+                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
+                firstFragment?.setImage(bitmap)
+                photo_image_view.setImageBitmap(bitmap)
+                add_photo_text.visibility = View.INVISIBLE
+                replace_image_layout.visibility = View.VISIBLE
+            } catch (e: IOException) {
+                replace_image_layout.visibility = View.INVISIBLE
+                add_photo_text.visibility = View.VISIBLE
+                e.printStackTrace()
+            }
+
+        }
     }
 
     fun setFirstPage(view: View) {
@@ -40,6 +65,7 @@ class ClientEditActivity : BaseActivity() {
         client_cart.isActivated = i == 0
         training_amount.isActivated = i == 1
         measures.isActivated = i == 2
+
     }
 
     fun saveClientChanges(view: View){
@@ -48,16 +74,20 @@ class ClientEditActivity : BaseActivity() {
 
     fun setSecondPage(view: View) {
         setSelectedTab(1)
-        /*supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_placement, CliensEditFirstFragment.newInstance())
-            .commit()*/
+        if(thirdFragment == null)
+            thirdFragment = ClientsEditSecondPage.newInstance(viewModel.client)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_placement, thirdFragment!!)
+            .commit()
     }
 
     fun setThirdPage(view: View) {
         setSelectedTab(2)
-        /*supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_placement, CliensEditFirstFragment.newInstance())
-            .commit()*/
+        if(secondFragment == null)
+            secondFragment = ClientsEditSecondPage.newInstance(viewModel.client)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_placement, secondFragment!!)
+            .commit()
     }
 
     fun deleteClient(view: View){
@@ -105,7 +135,7 @@ class ClientEditActivity : BaseActivity() {
             last_measure_date.text = client.lastMeasure?.dateOfMeasure?.let { convertLongToTimeDDMMYY(it) } ?: no_data
             textView24.text = last_measure
             make_measure_btn.text = make_measure
-            training_amount.text = "${trainings_total_amount}: ${client.measurementsList?.size}"
+            training_amount.text = "${trainings_total_amount}: ${client.trainingList?.size}"
             this@ClientEditActivity.measures.text = measures
         }
     }
