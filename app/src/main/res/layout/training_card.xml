@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/closed_one"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_3sdp"
+        android:background="@drawable/close_button_drawable"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0">
+
+
+        <View
+            android:id="@+id/divider15"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/_11sdp"
+            android:layout_marginTop="@dimen/_23sdp"
+            android:layout_marginEnd="@dimen/_11sdp"
+            android:background="@color/black5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0" />
+
+        <ImageView
+            android:id="@+id/closed_image"
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:padding="@dimen/_6sdp"
+            android:src="@drawable/hide_show_drop_down_menu_icon"
+            app:layout_constraintBottom_toTopOf="@+id/divider15"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/training_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:ellipsize="end"
+            android:fontFamily="@font/gilroylight"
+            android:lines="1"
+            android:text="Название тренировки"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/_8sdp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/divider15"
+            app:layout_constraintEnd_toStartOf="@+id/training_dur_text"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <TextView
+            android:id="@+id/training_name_shown"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:ellipsize="end"
+            android:fontFamily="@font/gilroylight"
+            android:lines="1"
+            android:text="Название тренировки"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/_8sdp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/divider15"
+            app:layout_constraintEnd_toStartOf="@+id/training_dur_text"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <TextView
+            android:id="@+id/training_dur_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:fontFamily="@font/gilroylight"
+            android:lines="1"
+            android:text="Длительность программы:"
+            android:textColor="@color/black45"
+            android:textSize="@dimen/_8sdp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/divider15"
+            app:layout_constraintEnd_toStartOf="@+id/training_dur_text2"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <TextView
+            android:id="@+id/training_dur_text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:fontFamily="@font/gilroylight"
+            android:lines="1"
+            android:text="00:00"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/_8sdp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/divider15"
+            app:layout_constraintEnd_toStartOf="@+id/closed_image"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

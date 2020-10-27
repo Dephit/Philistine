@@ -1,18 +1,19 @@
 package com.sergeenko.alexey.noble.dataclasses
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.os.Parcel
-import android.os.Parcelable
-import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import com.sergeenko.alexey.noble.*
+import com.sergeenko.alexey.noble.TrainingItem
+import com.sergeenko.alexey.noble.convertLongToTimeDDMM
+import com.sergeenko.alexey.noble.getAgeFromLong
+import com.sergeenko.alexey.noble.toByteArray
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONArray
-import org.json.JSONObject
 import java.io.Serializable
 import java.util.*
 
@@ -64,7 +65,7 @@ data class Client(
     fun getClientLastVisit(lang: Language) = lastVisit?.let {
         "${if(sex == "woman") lang.she_was else lang.he_was}: ${convertLongToTimeDDMM(it.toLong())}"}
 
-    fun lastVisit() = trainingList?.lastOrNull()?.dateOfTraining
+    private fun lastVisit() = trainingList?.lastOrNull()?.dateOfTraining
 
     @Ignore
     fun getClientAddFormData(): MutableList<MultipartBody.Part> {
@@ -120,49 +121,3 @@ data class Client(
 }
 
 
-@Dao
-interface ClientDao{
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertClient(client: Client)
-
-    @Update
-    fun updateClient(client: Client)
-
-    @Delete
-    fun deleteClient(client: Client)
-
-    @Query("SELECT * FROM Client")
-    fun getClientsLiveData(): LiveData<List<Client>>
-
-    @Query("SELECT * FROM Client WHERE id LIKE :id")
-    fun getClientById(id: String): Client
-
-    @Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%' ORDER BY sirname ASC")
-    fun getClientsOrderBySirnameAsc(name: String = ""): List<Client>
-
-    @Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%' ORDER BY sirname DESC")
-    fun getClientsOrderBySirnameDesc(name: String = ""): List<Client>
-
-    @Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%' ORDER BY lastVisit ASC")
-    fun getClientsOrderByDateAsc(name: String = ""): List<Client>
-
-    @Query("SELECT * FROM Client WHERE sirname LIKE '%' || :name || '%' OR page_name LIKE '%' || :name || '%' OR patronymic LIKE '%' || :name || '%' ORDER BY lastVisit DESC")
-    fun getClientsOrderByDateDesc(name: String = ""): List<Client>
-}
-
-class BitmapConvector {
-    @TypeConverter
-    fun fromString(value: String?): Bitmap? {
-        val ba = value?.stringToByteArray()
-        return  try {
-            ba?.size?.let { BitmapFactory.decodeByteArray(ba, 0, it) }
-        } catch (e: Exception){
-            null
-        }
-    }
-
-    @TypeConverter
-    fun toString(bitmap: Bitmap?): String? {
-        return bitmap?.toByteArray().contentToString()
-    }
-}

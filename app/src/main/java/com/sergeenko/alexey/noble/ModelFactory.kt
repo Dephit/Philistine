@@ -11,6 +11,7 @@ class ModelFactory(val application: Application, private val client: Client) : V
         return when (modelClass) {
             ClientEditViewModel::class.java -> { ClientEditViewModel(application = application, client = client) as T }
             CliensEditFirstViewModel::class.java -> { CliensEditFirstViewModel(application, client) as T }
+            ClientsEditSecondPageViewModel::class.java -> { ClientsEditSecondPageViewModel(application, client) as T }
             else -> BaseViewModel(application) as T
         }
     }

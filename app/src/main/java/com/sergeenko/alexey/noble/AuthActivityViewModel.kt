@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.sergeenko.alexey.noble.dataclasses.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -60,7 +61,8 @@ class AuthActivityViewModel(application: Application) : BaseViewModel(applicatio
                     Log.i("dasdasdasd", response.message())
                     if(response.isSuccessful){
                         viewModelScope.launch {
-                            addUser(User(email, Calendar.getInstance().time.time, password, response.body()))
+                            user = User(email = email, lastTimeSync = Calendar.getInstance().time.time, pass = password, club = response.body())
+                            addUser(user!!)
                         }
                     }else{
                         authError()
@@ -82,8 +84,11 @@ class AuthActivityViewModel(application: Application) : BaseViewModel(applicatio
     }
 
     private fun addUser(user: User) {
+        userDao?.deleteTable()
         userDao?.insertUser(user)
-        isAuthSuccessful.postValue(true)
+        viewModelScope.launch {
+            isAuthSuccessful.postValue(true)
+        }
     }
 
 

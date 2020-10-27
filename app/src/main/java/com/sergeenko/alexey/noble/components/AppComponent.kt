@@ -22,6 +22,7 @@ interface AppComponent {
     fun userDao(): UserDao
     fun getConfigDao(): ConfigDao
     fun clientDao(): ClientDao
+    fun trainingDao(): TrainingDao
 
     fun getUser(): User?
     fun getLocaleLanguage(): Language

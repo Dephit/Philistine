@@ -37,10 +37,15 @@ class UserListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(UserListViewModel::class.java)
+        setListeners()
+        bringAlphaToFront()
+        observeOnViewModel()
+    }
+
+    private fun setListeners() {
         search_edit.setOnFocusChangeListener { v, hasFocus ->
             search_input.setStartIconDrawable(if (hasFocus) R.drawable.ic_close else R.drawable.ic_search)
         }
-
         search_input.setStartIconOnClickListener {
             hideKeyboard(activity)
             search_edit.apply {
@@ -58,10 +63,8 @@ class UserListFragment : Fragment() {
             }
             false
         }
-        bringAlphaToFront()
         by_alphabet_button.setOnClickListener { sortByAlpha() }
         by_date_button.setOnClickListener { sortByDate() }
-        observeOnViewModel()
     }
 
     private fun sortByAlpha(){

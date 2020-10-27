@@ -52,13 +52,11 @@ class StartActivity : BaseActivity() {
 
 class StartViewModel(application: Application): BaseViewModel(application){
 
+
     suspend fun removeUser() {
         withContext(viewModelScope.coroutineContext) {
-            user?.let {
-                appComponent?.database()
-                    ?.clearAllTables()
-                user = null
-            }
+            appComponent!!.database().clearAllTables()
+            user = null
         }
     }
 }

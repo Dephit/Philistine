@@ -1,7 +1,22 @@
 package com.sergeenko.alexey.noble
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.LiveData
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import com.sergeenko.alexey.noble.dataclasses.Client
 
-class ClientsEditSecondPageViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+class ClientsEditSecondPageViewModel(application: Application,val client: Client) : BaseViewModel(application) {
+    var userList: LiveData<PagedList<TrainingItem>>? = null
+    val sourceFactory: UsersDataSourceFactory = UsersDataSourceFactory(client.trainingList!!)
+
+    init {
+        val config = PagedList.Config.Builder()
+                .setPageSize(10)
+                .setInitialLoadSizeHint(10 * 2)
+                .setEnablePlaceholders(false)
+                .build()
+        userList = LivePagedListBuilder(sourceFactory, config).build()
+    }
 }
+

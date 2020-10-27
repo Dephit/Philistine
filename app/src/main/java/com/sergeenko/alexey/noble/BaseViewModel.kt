@@ -27,7 +27,7 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
 
     init {
         viewModelScope.launch {
-            user = appComponent!!.getUser()
+            user = appComponent!!.userDao().getUser().firstOrNull()
             config = appComponent.getConfig() ?: Config()
             language.postValue(
                 appComponent.getLanguageDao()
@@ -35,6 +35,9 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
                     .firstOrNull()
                     ?.body ?: Language()
             )
+            onInit()
         }
     }
+
+    open fun onInit() {}
 }

@@ -1,12 +1,16 @@
 package com.sergeenko.alexey.noble.dataclasses
 
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import com.sergeenko.alexey.noble.converters.ClubConverter
 import okhttp3.MultipartBody
 
 @Entity
 data class User(
     @PrimaryKey(autoGenerate = false)
+    var id: Int = 0,
     var email: String,
     val lastTimeSync: Long,
     val pass: String,
@@ -28,43 +32,4 @@ data class User(
             .build().parts()
 }
 
-@Dao
-interface UserDao{
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUser(user: User)
-
-    @Update
-    fun updateUser(user: User)
-
-    @Delete
-    fun deleteUser(gender: User)
-
-    @Query("SELECT * FROM User")
-    fun getUser(): List<User>
-}
-
-
-@Entity
-data class Config(
-    @PrimaryKey(autoGenerate = false)
-    val id: String = "nobleConfig",
-    var selectedLanguageCode: String = "ru",
-    var countryCode: String = "ru"
-)
-
-@Dao
-interface ConfigDao{
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertConfig(user: Config)
-
-    @Update
-    fun updateConfig(user: Config)
-
-    @Delete
-    fun deleteConfig(gender: Config)
-
-    @Query("SELECT * FROM Config")
-    fun getUser(): List<Config>
-}

@@ -17,13 +17,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-
 class ClientEditActivity : BaseActivity() {
 
     lateinit var viewModel: ClientEditViewModel
     var firstFragment: CliensEditFirstFragment? = null
     var secondFragment: ClientsEditSecondPage? = null
-    var thirdFragment: ClientsEditSecondPage? = null
+    var thirdFragment: ClientEditThirdFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,20 +73,20 @@ class ClientEditActivity : BaseActivity() {
 
     fun setSecondPage(view: View) {
         setSelectedTab(1)
-        if(thirdFragment == null)
-            thirdFragment = ClientsEditSecondPage.newInstance(viewModel.client)
+        if(secondFragment == null)
+            secondFragment = ClientsEditSecondPage.newInstance(viewModel.client)
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_placement, thirdFragment!!)
-            .commit()
+                .replace(R.id.fragment_placement, secondFragment!!)
+                .commit()
     }
 
     fun setThirdPage(view: View) {
         setSelectedTab(2)
-        if(secondFragment == null)
-            secondFragment = ClientsEditSecondPage.newInstance(viewModel.client)
+        if(thirdFragment == null)
+            thirdFragment = ClientEditThirdFragment.newInstance(viewModel.client)
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_placement, secondFragment!!)
-            .commit()
+                .replace(R.id.fragment_placement, thirdFragment!!)
+                .commit()
     }
 
     fun deleteClient(view: View){
@@ -130,9 +129,12 @@ class ClientEditActivity : BaseActivity() {
             created_text.text = "${created}: ${client.dateS?.toLongOrNull()?.let { date -> convertLongToTimeDDMMYY(date) }}"
 
             this@ClientEditActivity.client_cart.text = client_cart
-            measure_error_layout.visibility = if(!client.trainings.isNullOrEmpty()) View.VISIBLE else View.GONE
+            measure_error_layout.visibility = if(client.trainingList!!.size % 5 == 0) View.VISIBLE else View.GONE
+            close_message.setOnClickListener {
+                measure_error_layout.visibility = View.GONE
+            }
             textView22.text = you_need_to_make_measure
-            last_measure_date.text = client.lastMeasure?.dateOfMeasure?.let { convertLongToTimeDDMMYY(it) } ?: no_data
+            last_measure_date.text = client.measurementsList?.lastOrNull()?.dateOfMeasure?.let { convertLongToTimeDDMMYY(it) } ?: no_data
             textView24.text = last_measure
             make_measure_btn.text = make_measure
             training_amount.text = "${trainings_total_amount}: ${client.trainingList?.size}"

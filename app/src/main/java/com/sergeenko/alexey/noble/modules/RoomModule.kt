@@ -2,6 +2,7 @@ package com.sergeenko.alexey.noble.modules
 
 import android.app.Application
 import androidx.room.Room
+import com.sergeenko.alexey.noble.TrainingDao
 import com.sergeenko.alexey.noble.database.AppDatabase
 import com.sergeenko.alexey.noble.dataclasses.*
 import dagger.Module
@@ -43,6 +44,10 @@ class RoomModule(mApplication: Application?) {
     fun providesConfigDao(demoDatabase: AppDatabase): ConfigDao {
         return demoDatabase.config()
     }
+
+    @Singleton
+    @Provides
+    fun providesTrainingDao(demoDatabase: AppDatabase): TrainingDao = demoDatabase.trainingDao()
 
     @Singleton
     @Provides
