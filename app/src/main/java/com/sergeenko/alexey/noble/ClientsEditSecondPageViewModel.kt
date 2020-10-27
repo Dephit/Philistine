@@ -8,7 +8,7 @@ import com.sergeenko.alexey.noble.dataclasses.Client
 
 class ClientsEditSecondPageViewModel(application: Application,val client: Client) : BaseViewModel(application) {
     var userList: LiveData<PagedList<TrainingItem>>? = null
-    val sourceFactory: UsersDataSourceFactory = UsersDataSourceFactory(client.trainingList!!)
+    val sourceFactory: UsersDataSourceFactory = UsersDataSourceFactory(client.trainingList!!.reversed())
 
     init {
         val config = PagedList.Config.Builder()

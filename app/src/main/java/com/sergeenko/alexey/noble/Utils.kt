@@ -45,6 +45,22 @@ fun getAgeFromLong(dateOfBirthLong: Long) = getDiffYears(dateOfBirthLong * 1000,
 
 fun convertStringToDate(get: Int) = ("00${get}").substring(get.toString().length)
 
+
+fun getMuscleName(lang: Language, value: String) = when(value){
+      "Кардио" -> lang.cardio
+      "Лимфодренажный массаж" -> lang.limfo_massage
+      "Силовой" -> lang.strength_mode
+      "Расслабляющий массаж" -> lang.relax_massage
+      "Тонус мышц" -> lang.muscle_tonic
+      "Восстанавливающий массаж" -> lang.recovery_massage
+      "Антицеллюлитный массаж" -> lang.anticellulite_massage
+      "Укрепляющий массаж" -> lang.firming_massage
+      "Снижение веса" -> lang.weight_loss
+      "Ручные настройки" -> lang.manual_settings
+      else -> value
+  }
+
+
 fun longFromString(toString: String): Long {
     val day = toString.substring(0, 2)
     val month = toString.substring(3, 5)

@@ -90,6 +90,7 @@ interface NobleApi {
 
 class Const{
     companion object {
+
         const val apiKey = 1111
         const val allLangApiEvent = "all_langs"
         const val langsGets = "langs_gets"
