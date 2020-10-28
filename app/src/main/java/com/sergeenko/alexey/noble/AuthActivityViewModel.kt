@@ -3,7 +3,9 @@ package com.sergeenko.alexey.noble
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.sergeenko.alexey.noble.dataclasses.*
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -29,7 +31,7 @@ class AuthActivityViewModel(application: Application) : BaseViewModel(applicatio
     }
 
     private fun getLanguages() {
-        viewModelScope.launch {
+        viewModelScope.launch(IO) {
             langList.postValue(languageDao?.getLanguage())
         }
     }
@@ -60,7 +62,7 @@ class AuthActivityViewModel(application: Application) : BaseViewModel(applicatio
                 override fun onResponse(call: Call<Club>, response: Response<Club>) {
                     Log.i("dasdasdasd", response.message())
                     if(response.isSuccessful){
-                        viewModelScope.launch {
+                        viewModelScope.launch(IO) {
                             user = User(email = email, lastTimeSync = Calendar.getInstance().time.time, pass = password, club = response.body())
                             addUser(user!!)
                         }
@@ -86,9 +88,7 @@ class AuthActivityViewModel(application: Application) : BaseViewModel(applicatio
     private fun addUser(user: User) {
         userDao?.deleteTable()
         userDao?.insertUser(user)
-        viewModelScope.launch {
-            isAuthSuccessful.postValue(true)
-        }
+        isAuthSuccessful.postValue(true)
     }
 
 

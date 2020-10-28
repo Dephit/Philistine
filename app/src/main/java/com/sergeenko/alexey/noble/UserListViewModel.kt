@@ -4,8 +4,10 @@ import android.app.Application
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.sergeenko.alexey.noble.dataclasses.Client
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -19,7 +21,7 @@ enum class SortType{
 
 class UserListViewModel(application: Application) : BaseViewModel(application) {
 
-    var sortBy = SortType.DateAsc
+    var sortBy = SortType.DateDesc
 
     override fun onInit(){
         getClient()
@@ -60,7 +62,7 @@ class UserListViewModel(application: Application) : BaseViewModel(application) {
             api?.getClients(it)?.enqueue(object : Callback<List<Client>> {
                 override fun onResponse(call: Call<List<Client>>, response: Response<List<Client>>) {
                     if(response.isSuccessful){
-                        viewModelScope.launch {
+                        viewModelScope.launch(IO) {
                             response.body()?.map {client->
                                 /*client.trainings()
                                 client.measuresFromJson()*/
@@ -75,7 +77,7 @@ class UserListViewModel(application: Application) : BaseViewModel(application) {
                 }
 
                 override fun onFailure(call: Call<List<Client>>, t: Throwable) {
-                    viewModelScope.launch {
+                    viewModelScope.launch(IO) {
                         clientList.postValue(getClients())
                     }
                 }
@@ -84,7 +86,7 @@ class UserListViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun searchClients(name: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(IO) {
             val text = name.trim()
             val list = mutableListOf<String>()
             val l = text.split(" ")
@@ -94,8 +96,6 @@ class UserListViewModel(application: Application) : BaseViewModel(application) {
                 }
 
             }
-
-
 
             clientList.postValue(when (list.size) {
                 1 -> getClients(list[0])

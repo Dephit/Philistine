@@ -3,12 +3,14 @@ package com.sergeenko.alexey.noble
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.sergeenko.alexey.noble.components.AppComponent
 import com.sergeenko.alexey.noble.dataclasses.Config
 import com.sergeenko.alexey.noble.dataclasses.Language
 import com.sergeenko.alexey.noble.dataclasses.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -16,9 +18,6 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
     fun getLanguage(): Language? = language.value
 
     var user: User? = null
-
-    var viewModelJob = Job()
-    val viewModelScope = CoroutineScope(Dispatchers.IO + viewModelJob)
     val appComponent: AppComponent? = (application as NobleApplication).appComponent
     val language = MutableLiveData<Language>()
     val configDao = appComponent?.getConfigDao()
@@ -26,7 +25,7 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
     lateinit var config: Config
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(IO) {
             user = appComponent!!.userDao().getUser().firstOrNull()
             config = appComponent.getConfig() ?: Config()
             language.postValue(

@@ -12,15 +12,17 @@ class UsersDataSource(var trainingList: List<TrainingItem>) : ItemKeyedDataSourc
     }
 
     private fun getProducts(callback: LoadCallback<TrainingItem>)  {
-        var min = key
-        min = if(min >= trainingList.size)
-            trainingList.size - 1
-        else min
-        var max = key + 20
-        max = if(max >= trainingList.size)
-            trainingList.size - 1
-        else max
-        callback.onResult(trainingList.subList(min, max))
+        if(trainingList.isNotEmpty()) {
+            var min = key
+            min = if (min >= trainingList.size)
+                trainingList.size - 1
+            else min
+            var max = key + 20
+            max = if (max >= trainingList.size)
+                trainingList.size - 1
+            else max
+            callback.onResult(trainingList.subList(min, max))
+        }
     }
 
 

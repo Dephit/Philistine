@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.hbb20.CountryCodePicker
 import com.sergeenko.alexey.noble.dataclasses.Client
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,7 +33,7 @@ class CliensEditFirstViewModel(application: Application,val client: Client) : Ba
     override fun getDefaultPhoneCode(): String = config.countryCode
 
     override fun updateCountryCode(selectedCountryNameCode: String?) {
-        viewModelScope.launch {
+        viewModelScope.launch(IO) {
             selectedCountryNameCode?.let{
                 config.countryCode = it
                 configDao?.updateConfig(config)
@@ -128,7 +130,7 @@ class CliensEditFirstViewModel(application: Application,val client: Client) : Ba
     }
 
     private fun addClientToDataBase(client: Client) {
-        viewModelScope.launch {
+        viewModelScope.launch(IO) {
             appComponent?.clientDao()?.updateClient(client)
         }
     }

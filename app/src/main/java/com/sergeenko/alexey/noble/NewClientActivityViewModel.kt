@@ -4,12 +4,14 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.hbb20.CountryCodePicker
 import com.sergeenko.alexey.noble.dataclasses.Client
 import com.sergeenko.alexey.noble.dataclasses.Measure
 import com.sergeenko.alexey.noble.dataclasses.MeasureConvert
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -39,7 +41,7 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
     override fun getDefaultPhoneCode(): String = config.countryCode
 
     override fun updateCountryCode(selectedCountryNameCode: String?) {
-        viewModelScope.launch {
+        viewModelScope.launch(IO) {
             selectedCountryNameCode?.let{
                 config.countryCode = it
                 configDao?.updateConfig(config)
@@ -78,7 +80,7 @@ class NewClientActivityViewModel(application: Application) : BaseViewModel(appli
     }
 
     private fun addClientToDataBase(body: Client) {
-        viewModelScope.launch {
+        viewModelScope.launch(IO) {
             appComponent?.clientDao()?.insertClient(body)
         }
     }

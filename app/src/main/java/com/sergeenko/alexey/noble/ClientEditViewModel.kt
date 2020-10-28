@@ -2,7 +2,9 @@ package com.sergeenko.alexey.noble
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.sergeenko.alexey.noble.dataclasses.Client
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,7 +20,7 @@ class ClientEditViewModel(application: Application, val client: Client): BaseVie
     }
 
     fun deleteClient() {
-        viewModelScope.launch {
+        viewModelScope.launch(IO) {
             api?.deleteClient(user!!.getFieldMap(), clientId = client.id)?.enqueue(
                     object : Callback<Int> {
                         override fun onResponse(call: Call<Int>, response: Response<Int>) {
@@ -37,7 +39,7 @@ class ClientEditViewModel(application: Application, val client: Client): BaseVie
     }
 
     private fun deleteClientFromDB() {
-        viewModelScope.launch {
+        viewModelScope.launch(IO) {
             appComponent?.clientDao()?.deleteClient(client)
             isClientDeleted.postValue(true)
         }

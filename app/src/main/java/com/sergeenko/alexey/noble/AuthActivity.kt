@@ -11,12 +11,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeenko.alexey.noble.dataclasses.LangList
 import com.sergeenko.alexey.noble.dataclasses.Language
 import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.android.synthetic.main.lang_text_view.view.*
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 
 class AuthActivity : BaseActivity() {
@@ -154,7 +156,7 @@ class MyAdapter(var config: BaseViewModel, private val langList: List<LangList>)
 
     private fun changeLanguage(langList: LangList) {
         config.apply {
-            viewModelScope.launch {
+            viewModelScope.launch(IO) {
                 language.postValue(langList.body)
                 config.selectedLanguageCode = langList.name
                 configDao?.insertConfig(config)
