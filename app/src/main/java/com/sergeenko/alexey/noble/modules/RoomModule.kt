@@ -33,7 +33,6 @@ class RoomModule(mApplication: Application?) {
         return demoDatabase.clientDao()
     }
 
-    @Singleton
     @Provides
     fun providesUser(userDao: UserDao): User? {
         return userDao.getUser().firstOrNull()
@@ -49,17 +48,13 @@ class RoomModule(mApplication: Application?) {
     @Provides
     fun providesTrainingDao(demoDatabase: AppDatabase): TrainingDao = demoDatabase.trainingDao()
 
-    @Singleton
     @Provides
-    fun providesConfig(demoDatabase: AppDatabase): Config {
-        return demoDatabase.config().getUser().firstOrNull() ?: Config()
-    }
+    fun providesConfig(demoDatabase: AppDatabase): Config = demoDatabase.config().getUser().firstOrNull() ?: Config()
 
     @Singleton
     @Provides
-    fun providesLanguageDao(demoDatabase: AppDatabase): LanguageDao {
-        return demoDatabase.languageDao()
-    }
+    fun providesLanguageDao(demoDatabase: AppDatabase): LanguageDao = demoDatabase.languageDao()
+
 
     @Singleton
     @Provides

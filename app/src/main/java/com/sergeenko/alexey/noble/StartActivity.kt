@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.sergeenko.alexey.noble.dataclasses.Client
 import com.sergeenko.alexey.noble.dataclasses.User
 import kotlinx.android.synthetic.main.user_list_fragment.*
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -32,12 +33,15 @@ class StartActivity : BaseActivity() {
             .replace(R.id.header_contained, StartScreenHeaderFragment.newInstance())
             .replace(R.id.left_container, UserListFragment.newInstance())
             .commit()
+
     }
+
+
 
     fun exitFromAccount(view: View){
         val builder = AlertDialog.Builder(this, R.style.AlertDialog)
         builder.setPositiveButton(viewModel.getLanguage()?.exit) { _, _ ->
-                    viewModel.viewModelScope.launch {
+                    viewModel.viewModelScope.launch(IO) {
                         viewModel.removeUser()
                         startActivity(Intent(this@StartActivity, MainActivity::class.java))
                         finishAffinity()
@@ -55,9 +59,8 @@ class StartViewModel(application: Application): BaseViewModel(application){
 
 
     suspend fun removeUser() {
-        withContext(viewModelScope.coroutineContext) {
-            appComponent!!.database().clearAllTables()
-            user = null
-        }
+        appComponent!!.database().clearAllTables()
+        user = null
     }
+
 }

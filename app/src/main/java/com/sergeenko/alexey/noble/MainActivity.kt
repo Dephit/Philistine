@@ -20,6 +20,7 @@ import retrofit2.awaitResponse
 import java.util.*
 import javax.inject.Inject
 
+
 class MainActivity : BaseActivity() {
 
     private var viewModelJob = Job()
@@ -27,6 +28,8 @@ class MainActivity : BaseActivity() {
 
     @Inject
     lateinit var user: User
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
