@@ -1,26 +1,16 @@
 package com.sergeenko.alexey.noble
 
 import android.content.Intent
-import android.graphics.Paint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.sergeenko.alexey.noble.AuthErrorType.*
-import com.sergeenko.alexey.noble.dataclasses.LangList
 import com.sergeenko.alexey.noble.dataclasses.Language
 import kotlinx.android.synthetic.main.activity_auth.*
-import kotlinx.android.synthetic.main.lang_text_view.view.*
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
 
 class AuthActivity : BaseActivity() {
 
@@ -164,37 +154,3 @@ class AuthActivity : BaseActivity() {
     }
 }
 
-fun TextView.underline() {
-    paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG
-}
-
-class MyAdapter(var config: BaseViewModel, private val langList: List<LangList>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
-
-    class MyViewHolder(private val textView: TextView) : RecyclerView.ViewHolder(textView)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-            val textView = LayoutInflater.from(parent.context).inflate(R.layout.lang_text_view, parent, false) as TextView
-            return MyViewHolder(textView)
-    }
-
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.itemView.textView.apply {
-            text = langList[position].name
-            setOnClickListener {
-                changeLanguage(langList[position])
-            }
-        }
-    }
-
-    private fun changeLanguage(langList: LangList) {
-        config.apply {
-            viewModelScope.launch(IO) {
-                language.postValue(langList.body)
-                config.selectedLanguageCode = langList.name
-                configDao?.insertConfig(config)
-            }
-        }
-    }
-
-    override fun getItemCount() = langList.size
-}

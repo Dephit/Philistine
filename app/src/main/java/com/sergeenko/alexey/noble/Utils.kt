@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.PopupWindow
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
@@ -35,6 +37,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlinx.android.synthetic.main.personal_info_layout.view.name_edit as name_edit1
 
+fun TextView.underline() {
+    paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG
+}
+
 fun hideKeyboard(activity: Activity?) {
     val inputManager: InputMethodManager? = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
     val v = activity?.currentFocus ?: return
@@ -44,7 +50,6 @@ fun hideKeyboard(activity: Activity?) {
 fun getAgeFromLong(dateOfBirthLong: Long) = getDiffYears(dateOfBirthLong * 1000, Calendar.getInstance().time.time).toString()
 
 fun convertStringToDate(get: Int) = ("00${get}").substring(get.toString().length)
-
 
 fun getMuscleName(lang: Language, value: String) = when(value){
       "Кардио" -> lang.cardio
@@ -59,7 +64,6 @@ fun getMuscleName(lang: Language, value: String) = when(value){
       "Ручные настройки" -> lang.manual_settings
       else -> value
   }
-
 
 fun longFromString(toString: String): Long {
     val day = toString.substring(0, 2)

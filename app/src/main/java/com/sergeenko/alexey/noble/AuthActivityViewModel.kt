@@ -14,8 +14,7 @@ import retrofit2.Response
 import java.util.*
 import java.util.regex.Pattern
 
-sealed class AuthState(){
-
+sealed class AuthState{
     object LoggingState: AuthState()
     object LoggedState: AuthState()
     object DefaultState: AuthState()
