@@ -14,13 +14,23 @@ import retrofit2.Response
 import java.util.*
 import java.util.regex.Pattern
 
+sealed class AuthState(){
+
+    object LoggingState: AuthState()
+    object LoggedState: AuthState()
+    object DefaultState: AuthState()
+    class ErrorState(val error: AuthErrorType,val message: String? = null) : AuthState()
+}
+
+enum class AuthErrorType{
+    EmailError, PasswordError, NetworkError, AgreementError
+}
+
 class AuthActivityViewModel(application: Application) : BaseViewModel(application) {
 
+    val authState = MutableLiveData<AuthState>(AuthState.DefaultState)
     val langList = MutableLiveData<List<LangList>?>()
     val isListOpen = MutableLiveData<Boolean>(false)
-    val nameErrorLiveData = MutableLiveData<String?>()
-    val passwordErrorLiveData = MutableLiveData<String?>()
-    val isAuthSuccessful = MutableLiveData<Boolean>(false)
     var isAgreementSigned = false
 
     private val languageDao: LanguageDao? = appComponent?.getLanguageDao()
@@ -45,50 +55,51 @@ class AuthActivityViewModel(application: Application) : BaseViewModel(applicatio
     }
 
     fun signIn(email: String, password: String) {
-        fun emailCorrect() = email.isNotEmpty() && isValidEmailAddress(email)
-        fun passwordCorrect() = password.isNotEmpty()
-        language.value?.apply {
-            if(emailCorrect() && passwordCorrect() && isAgreementSigned){
-                auth(email, password)
-            }
-            nameErrorLiveData.postValue(if(!emailCorrect()) wrong_email else null)
-            passwordErrorLiveData.postValue(if(!passwordCorrect()) wrong_password else null)
-            }
+        authState.postValue(AuthState.LoggingState)
+        if(email.isEmpty() || !isValidEmailAddress(email)){
+            authState.postValue(AuthState.ErrorState(AuthErrorType.EmailError))
+            return
+        }else if(password.isEmpty()){
+            authState.postValue(AuthState.ErrorState(AuthErrorType.PasswordError))
+            return
+        }else if(!isAgreementSigned){
+            authState.postValue(AuthState.ErrorState(AuthErrorType.AgreementError, getLanguage()?.you_must_accept_user_agreement))
+            return
+        }
+
+        auth(email, password)
     }
 
     private fun auth(email: String, password: String) {
         api?.auth(email = email, password = password)?.enqueue(
             object : Callback<Club> {
                 override fun onResponse(call: Call<Club>, response: Response<Club>) {
-                    Log.i("dasdasdasd", response.message())
                     if(response.isSuccessful){
                         viewModelScope.launch(IO) {
                             user = User(email = email, lastTimeSync = Calendar.getInstance().time.time, pass = password, club = response.body())
                             addUser(user!!)
                         }
                     }else{
-                        authError()
+                        authError(getLanguage()?.error)
                     }
                 }
 
                 override fun onFailure(call: Call<Club>, t: Throwable) {
-                    authError()
+                    authError(t.message)
                 }
 
             }
         )
     }
 
-    private fun authError() {
-        nameErrorLiveData.postValue(language.value?.wrong_email)
-        passwordErrorLiveData.postValue(language.value?.wrong_password)
-        isAuthSuccessful.postValue(false)
+    private fun authError(message: String? = null) {
+        authState.postValue(AuthState.ErrorState(AuthErrorType.NetworkError, message = message))
     }
 
     private fun addUser(user: User) {
         userDao?.deleteTable()
         userDao?.insertUser(user)
-        isAuthSuccessful.postValue(true)
+        authState.postValue(AuthState.LoggedState)
     }
 
 

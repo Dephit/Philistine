@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sergeenko.alexey.noble.dataclasses.Client
@@ -29,24 +30,28 @@ class StartActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
         viewModel = ViewModelProvider(this).get(StartViewModel::class.java)
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.header_contained, StartScreenHeaderFragment.newInstance())
-            .replace(R.id.left_container, UserListFragment.newInstance())
-            .commit()
-
+        viewModel.currentState.observe(this, {
+            when(it){
+                is StartScreenState.NoDeviceState -> { }
+                is StartScreenState.DefaultState -> {
+                    supportFragmentManager.beginTransaction()
+                            .replace(R.id.header_contained, StartScreenHeaderFragment.newInstance())
+                            .replace(R.id.left_container, UserListFragment.newInstance())
+                            .commit()
+                }
+                is StartScreenState.LoggedOutState -> {
+                    startActivity(Intent(this@StartActivity, MainActivity::class.java))
+                    finishAffinity()
+                }
+            }
+        })
     }
-
-
 
     fun exitFromAccount(view: View){
         val builder = AlertDialog.Builder(this, R.style.AlertDialog)
         builder.setPositiveButton(viewModel.getLanguage()?.exit) { _, _ ->
-                    viewModel.viewModelScope.launch(IO) {
-                        viewModel.removeUser()
-                        startActivity(Intent(this@StartActivity, MainActivity::class.java))
-                        finishAffinity()
-                    }
-                }
+            viewModel.removeUser()
+        }
                 .setNegativeButton(viewModel.getLanguage()?.decline) { _, _ -> }
                 .setMessage(viewModel.getLanguage()?.do_you_want_to_exit_account)
                 .setTitle("")
@@ -55,12 +60,22 @@ class StartActivity : BaseActivity() {
 
 }
 
+sealed class StartScreenState(){
+    object NoDeviceState : StartScreenState()
+    object DefaultState : StartScreenState()
+    object LoggedOutState : StartScreenState()
+
+}
+
 class StartViewModel(application: Application): BaseViewModel(application){
 
+    val currentState = MutableLiveData<StartScreenState>(StartScreenState.DefaultState)
 
-    suspend fun removeUser() {
-        appComponent!!.database().clearAllTables()
-        user = null
+    fun removeUser() {
+        viewModelScope.launch(IO) {
+            appComponent!!.database().clearAllTables()
+            user = null
+            currentState.postValue(StartScreenState.LoggedOutState)
+        }
     }
-
 }

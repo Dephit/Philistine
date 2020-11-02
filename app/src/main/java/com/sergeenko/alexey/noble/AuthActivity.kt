@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.sergeenko.alexey.noble.AuthErrorType.*
 import com.sergeenko.alexey.noble.dataclasses.LangList
 import com.sergeenko.alexey.noble.dataclasses.Language
 import kotlinx.android.synthetic.main.activity_auth.*
@@ -52,19 +53,50 @@ class AuthActivity : BaseActivity() {
                 lang_list_recycler_view.visibility = if(it) View.VISIBLE else View.GONE
                 chosen_measure_icon.isActivated = it
             })
-            nameErrorLiveData.observe(this@AuthActivity, {
-                name_input.error = it
-            })
-            passwordErrorLiveData.observe(this@AuthActivity, {
-                password_input.error = it
-            })
-            isAuthSuccessful.observe(this@AuthActivity, {
-                if(it){
-                    startActivity(Intent(this@AuthActivity, StartActivity::class.java))
-                }else {
-                    Toast.makeText(this@AuthActivity, "not cool", Toast.LENGTH_LONG).show()
+            authState.observe(this@AuthActivity, {
+                when(it){
+                    AuthState.LoggingState -> {
+                        logging()
+                    }
+                    AuthState.LoggedState -> {
+                        authSuccsess()
+                    }
+                    AuthState.DefaultState -> {
+                        defaultState()
+                    }
+                    is AuthState.ErrorState ->
+                        manageError(it)
                 }
             })
+        }
+    }
+
+    private fun authSuccsess() {
+        startActivity(Intent(this@AuthActivity, StartActivity::class.java))
+        finish()
+    }
+
+    private fun logging() {
+        name_input.isEnabled = false
+        password_input.isEnabled = false
+        sign_in_button.isEnabled = false
+    }
+
+    private fun defaultState() {
+        name_input.isEnabled = true
+        password_input.isEnabled = true
+        sign_in_button.isEnabled = true
+        name_input.error = ""
+        password_input.error = ""
+    }
+
+    private fun manageError(errorState: AuthState.ErrorState) {
+        defaultState()
+        when(errorState.error){
+            EmailError -> name_input.error = " "
+            PasswordError -> password_input.error = " "
+            NetworkError -> Toast.makeText(this, errorState.message, Toast.LENGTH_SHORT).show()
+            AgreementError -> Toast.makeText(this, errorState.message, Toast.LENGTH_SHORT).show()
         }
     }
 
