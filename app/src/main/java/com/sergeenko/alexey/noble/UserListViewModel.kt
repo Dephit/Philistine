@@ -56,8 +56,6 @@ class UserListViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun getClient(){
-        /*if(user == null)
-            user = appComponent!!.userDao().getUser()*/
         user?.getFieldMap()?.let {
             api?.getClients(it)?.enqueue(object : Callback<List<Client>> {
                 override fun onResponse(call: Call<List<Client>>, response: Response<List<Client>>) {

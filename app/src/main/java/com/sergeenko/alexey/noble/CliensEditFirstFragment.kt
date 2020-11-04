@@ -3,14 +3,17 @@ package com.sergeenko.alexey.noble
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.sergeenko.alexey.noble.dataclasses.Client
+import kotlinx.android.synthetic.main.activity_client_edit.*
 import kotlinx.android.synthetic.main.cliens_edit_first_fragment.*
 import kotlinx.android.synthetic.main.personal_info_layout.*
+import kotlin.system.measureTimeMillis
 
 class CliensEditFirstFragment : BaseFragment() {
 

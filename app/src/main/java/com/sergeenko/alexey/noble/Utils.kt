@@ -5,9 +5,9 @@ import android.app.ActionBar
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
+import android.os.RemoteException
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -17,6 +17,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.PopupWindow
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
@@ -24,15 +25,12 @@ import com.sergeenko.alexey.noble.dataclasses.Client
 import com.sergeenko.alexey.noble.dataclasses.Language
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_new_client.*
 import kotlinx.android.synthetic.main.calendar.view.*
-import kotlinx.android.synthetic.main.client_card.view.*
 import kotlinx.android.synthetic.main.measure_input.view.*
-import kotlinx.android.synthetic.main.personal_info_layout.*
 import kotlinx.android.synthetic.main.personal_info_layout.view.*
 import org.json.JSONArray
-import org.json.JSONObject
 import java.io.ByteArrayOutputStream
+import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlinx.android.synthetic.main.personal_info_layout.view.name_edit as name_edit1
@@ -41,10 +39,16 @@ fun TextView.underline() {
     paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG
 }
 
-fun hideKeyboard(activity: Activity?) {
-    val inputManager: InputMethodManager? = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-    val v = activity?.currentFocus ?: return
-    inputManager?.hideSoftInputFromWindow(v.windowToken, 0)
+fun makeAndShowToast(context: WeakReference<Context>, message: String = "", lenght: Int = Toast.LENGTH_SHORT){
+    Toast.makeText(context.get(), message, lenght).show()
+}
+
+fun hideKeyboard(activity: WeakReference<Activity>?) {
+    activity?.get()?.apply {
+        val inputManager: InputMethodManager? = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        val v = currentFocus ?: return
+        inputManager?.hideSoftInputFromWindow(v.windowToken, 0)
+    }
 }
 
 fun getAgeFromLong(dateOfBirthLong: Long) = getDiffYears(dateOfBirthLong * 1000, Calendar.getInstance().time.time).toString()
@@ -52,16 +56,16 @@ fun getAgeFromLong(dateOfBirthLong: Long) = getDiffYears(dateOfBirthLong * 1000,
 fun convertStringToDate(get: Int) = ("00${get}").substring(get.toString().length)
 
 fun getMuscleName(lang: Language, value: String) = when(value){
-      "Кардио" -> lang.cardio
-      "Лимфодренажный массаж" -> lang.limfo_massage
-      "Силовой" -> lang.strength_mode
-      "Расслабляющий массаж" -> lang.relax_massage
-      "Тонус мышц" -> lang.muscle_tonic
-      "Восстанавливающий массаж" -> lang.recovery_massage
-      "Антицеллюлитный массаж" -> lang.anticellulite_massage
-      "Укрепляющий массаж" -> lang.firming_massage
-      "Снижение веса" -> lang.weight_loss
-      "Ручные настройки" -> lang.manual_settings
+    "Кардио" -> lang.cardio
+    "Лимфодренажный массаж" -> lang.limfo_massage
+    "Силовой" -> lang.strength_mode
+    "Расслабляющий массаж" -> lang.relax_massage
+    "Тонус мышц" -> lang.muscle_tonic
+    "Восстанавливающий массаж" -> lang.recovery_massage
+    "Антицеллюлитный массаж" -> lang.anticellulite_massage
+    "Укрепляющий массаж" -> lang.firming_massage
+    "Снижение веса" -> lang.weight_loss
+    "Ручные настройки" -> lang.manual_settings
       else -> value
   }
 
@@ -115,44 +119,41 @@ fun String.stringToByteArray(): ByteArray?{
     }
 }
 
-fun showCalendarView(context: Context, view: View, lang: Language, func: (day: Int, month: Int, year: Int)-> Unit) {
-    val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    val calendarView: View = inflater.inflate(R.layout.calendar, null)
-    val mPopupWindow = PopupWindow(calendarView, ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT)
-    mPopupWindow.elevation = 5.0f
-    mPopupWindow.isFocusable = true
-    mPopupWindow.isOutsideTouchable = true
+fun showCalendarView(context: WeakReference<Context>, view: View, lang: Language, func: (day: Int, month: Int, year: Int) -> Unit) {
+    context.get()?.let {
+        val inflater = it.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val calendarView: View = inflater.inflate(R.layout.calendar, null)
+        val mPopupWindow = PopupWindow(calendarView, ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT)
+        mPopupWindow.elevation = 5.0f
+        mPopupWindow.isFocusable = true
+        mPopupWindow.isOutsideTouchable = true
 
-    calendarView.close.text = lang.close
-    calendarView.confirm.text = "Ок"
+        calendarView.close.text = lang.close
+        calendarView.confirm.text = "Ок"
 
-    calendarView.bg.setOnClickListener {
-        mPopupWindow.dismiss()
-    }
-    calendarView.close.setOnClickListener {
-        mPopupWindow.dismiss()
-    }
-    calendarView.confirm.setOnClickListener {
-        func(calendarView.datePicker.dayOfMonth, calendarView.datePicker.month, calendarView.datePicker.year)
-        mPopupWindow.dismiss()
-    }
-    try {
-        mPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
-    } catch (e: java.lang.Exception) {
-        Log.e("ERROR_SHOWING", e.toString())
+        calendarView.bg.setOnClickListener {
+            mPopupWindow.dismiss()
+        }
+        calendarView.close.setOnClickListener {
+            mPopupWindow.dismiss()
+        }
+        calendarView.confirm.setOnClickListener {
+            func(calendarView.datePicker.dayOfMonth, calendarView.datePicker.month, calendarView.datePicker.year)
+            mPopupWindow.dismiss()
+        }
+        try {
+            mPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0)
+        } catch (e: java.lang.Exception) {
+            Log.e("ERROR_SHOWING", e.toString())
+        }
     }
 }
 
-fun convertLongToTimeDDMMYY(time: Long) = convertLongToTimeWithFormat(time, SimpleDateFormat("dd.MM.yyyy") )
+fun convertLongToTimeDDMMYY(time: Long) = convertLongToTimeWithFormat(time, "dd.MM.yyyy")
 
-fun convertLongToTimeDDMM(time: Long) = convertLongToTimeWithFormat(time, SimpleDateFormat("dd.MM"))
+fun convertLongToTimeDDMM(time: Long) = convertLongToTimeWithFormat(time, "dd.MM")
 
-private fun convertLongToTimeWithFormat(time: Long, format: SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy")): String {
-    Log.i("TIME_RAW", time.toString())
-    val date = Date(time * 1000)
-    Log.i("TIME_NOT_RAW", format.format(date))
-    return format.format(date)
-}
+private fun convertLongToTimeWithFormat(time: Long, format: String = "dd.MM.yyyy"): String = SimpleDateFormat(format, Locale.US).format(Date(time * 1000))
 
 fun replaceQuoits(get: String): String {
     return try {
@@ -192,7 +193,7 @@ fun ConstraintLayout.fillPersonalInfo(client: Client){
         .error(client.bitmap?.let {
             BitmapDrawable(resources, client.bitmap)
         } ?: context.getDrawable(R.drawable.client_image_place_holder))
-        .into(photo_image_view, object : Callback{
+        .into(photo_image_view, object : Callback {
             override fun onSuccess() {
                 replace_image_layout.visibility = View.VISIBLE
                 add_photo_text.visibility = View.INVISIBLE
@@ -207,6 +208,7 @@ fun ConstraintLayout.fillPersonalInfo(client: Client){
 
 }
 
+@SuppressLint("SetTextI18n")
 fun ConstraintLayout.setPersonalInfo(viewModel: ClientInfoInput, lang: Language){
     fun cppSetUp() {
         val ccp = personal_info.ccp
@@ -250,27 +252,27 @@ fun ConstraintLayout.setPersonalInfo(viewModel: ClientInfoInput, lang: Language)
                             mon = if (mon < 1) 1 else if (mon > 12) 12 else mon
                             cal.set(Calendar.MONTH, mon - 1)
                             year = if (year < 1900) 1900 else if (year > cal.get(Calendar.YEAR)) cal.get(
-                                Calendar.YEAR) else year
+                                    Calendar.YEAR) else year
                             cal.set(Calendar.YEAR, year)
 
                             day = if (day > cal.getActualMaximum(Calendar.DATE)) cal.getActualMaximum(
-                                Calendar.DATE) else day
+                                    Calendar.DATE) else day
                             clean = String.format("%02d%02d%02d", day, mon, year)
                         }
 
                         clean = String.format("%s.%s.%s", clean.substring(0, 2),
-                            clean.substring(2, 4),
-                            clean.substring(4, 8))
+                                clean.substring(2, 4),
+                                clean.substring(4, 8))
 
                         sel = if (sel < 0) 0 else sel
                         current = clean
-                        if(sel == 2 && p0!!.length > 10)
+                        if (sel == 2 && p0!!.length > 10)
                             sel = 3
-                        else if(sel == 3 && p0!!.length == 10)
+                        else if (sel == 3 && p0!!.length == 10)
                             sel = 2
-                        else if(sel == 5 && p0!!.length > 10)
+                        else if (sel == 5 && p0!!.length > 10)
                             sel = 6
-                        else if(sel == 6  && p0!!.length == 10)
+                        else if (sel == 6 && p0!!.length == 10)
                             sel = 5
                         setText(current)
                         setSelection(if (sel < current.count()) sel
@@ -287,20 +289,20 @@ fun ConstraintLayout.setPersonalInfo(viewModel: ClientInfoInput, lang: Language)
                 }
             })
         }
-        client_name_input.name_input.editText?.addTextChangedListener(afterTextChanged = {s->
+        client_name_input.name_input.editText?.addTextChangedListener(afterTextChanged = { s ->
             viewModel.setName(s.toString().trim())
         })
-        surname_input.name_input.editText?.addTextChangedListener(afterTextChanged = {s->
+        surname_input.name_input.editText?.addTextChangedListener(afterTextChanged = { s ->
             viewModel.setSurname(s.toString().trim())
         })
-        patro_input.name_input.editText?.addTextChangedListener(afterTextChanged = {s->
+        patro_input.name_input.editText?.addTextChangedListener(afterTextChanged = { s ->
             viewModel.setPatronymic(s.toString().trim())
         })
-        weight_input.name_input.editText?.addTextChangedListener(afterTextChanged = {s->
+        weight_input.name_input.editText?.addTextChangedListener(afterTextChanged = { s ->
             viewModel.setWeight(s.toString().trim())
 
         })
-        height_input.name_input.editText?.addTextChangedListener(afterTextChanged = {s->
+        height_input.name_input.editText?.addTextChangedListener(afterTextChanged = { s ->
             viewModel.setHeight(s.toString().trim())
         })
     }
@@ -313,14 +315,14 @@ fun ConstraintLayout.setPersonalInfo(viewModel: ClientInfoInput, lang: Language)
 
         surname_input.name_input.hint(surname)
         client_name_input.name_input.hint(name)
-        patro_input.name_input.hint( second_name)
-        date_input.hint( birthday)
-        height_input.name_input.hint( height)
-        weight_input.name_input.hint( weight)
-        phone_input.name_input.hint( phone)
+        patro_input.name_input.hint(second_name)
+        date_input.hint(birthday)
+        height_input.name_input.hint(height)
+        weight_input.name_input.hint(weight)
+        phone_input.name_input.hint(phone)
         male_check_box.text = male
         woman_check_box.text = female
-        phone_input.name_input.hint( phone)
+        phone_input.name_input.hint(phone)
     }
 
     photo_image_view.clipToOutline = true
@@ -335,7 +337,7 @@ fun ConstraintLayout.setPersonalInfo(viewModel: ClientInfoInput, lang: Language)
         woman_check_box.isChecked = true
     }
     date_input.setEndIconOnClickListener {
-        showCalendarView(context, this, lang) { day, month, year ->
+        showCalendarView(WeakReference(context), this, lang) { day, month, year ->
             date_input.editText?.setText("${convertStringToDate(day)}.${convertStringToDate(month + 1)}.$year")
         }
     }

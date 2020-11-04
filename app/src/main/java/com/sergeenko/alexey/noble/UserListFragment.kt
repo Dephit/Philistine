@@ -1,5 +1,7 @@
 package com.sergeenko.alexey.noble
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
@@ -21,6 +23,7 @@ import com.sergeenko.alexey.noble.dataclasses.Language
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.client_card.view.*
 import kotlinx.android.synthetic.main.user_list_fragment.*
+import java.lang.ref.WeakReference
 
 class UserListFragment : Fragment() {
 
@@ -47,7 +50,7 @@ class UserListFragment : Fragment() {
             search_input.setStartIconDrawable(if (hasFocus) R.drawable.ic_close else R.drawable.ic_search)
         }
         search_input.setStartIconOnClickListener {
-            hideKeyboard(activity)
+            hideKeyboard(WeakReference(activity))
             search_edit.apply {
                 if(text.toString().trim().isNotEmpty())
                     viewModel.searchClients("")
@@ -57,7 +60,7 @@ class UserListFragment : Fragment() {
         }
         search_edit.setOnKeyListener { _, _, event ->
             if((event.action == KeyEvent.ACTION_DOWN) && (event.keyCode == KeyEvent.KEYCODE_ENTER)){
-                hideKeyboard(activity)
+                hideKeyboard(WeakReference(activity))
                 viewModel.searchClients(search_edit.text.toString())
                 return@setOnKeyListener true
             }
@@ -91,15 +94,15 @@ class UserListFragment : Fragment() {
 
     private fun showSortToast() {
         viewModel.getLanguage()?.apply {
-            Toast.makeText(context,
-                    when (viewModel.sortBy) {
-                        SortType.SirnameDesc -> sorting_by_alphabet_desc
-                        SortType.SirnameAsc -> sorting_by_alphabet_asc
-                        SortType.DateDesc -> sorting_by_date_desc
-                        SortType.DateAsc -> sorting_by_date_asc
-                        else -> sorting_by_alphabet_asc
-                    }, Toast.LENGTH_SHORT
-            ).show()
+            context?.let {
+                makeAndShowToast(context = WeakReference(context), message = when (viewModel.sortBy) {
+                    SortType.SirnameDesc -> sorting_by_alphabet_desc
+                    SortType.SirnameAsc -> sorting_by_alphabet_asc
+                    SortType.DateDesc -> sorting_by_date_desc
+                    SortType.DateAsc -> sorting_by_date_asc
+                    else -> sorting_by_alphabet_asc
+                })
+            }
         }
     }
 
@@ -194,3 +197,4 @@ class SpacesItemDecoration(private val spanCount: Int, private val spacing: Int)
         outRect.right = spacing - (column + 1) * spacing / spanCount
     }
 }
+

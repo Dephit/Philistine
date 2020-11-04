@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.sergeenko.alexey.noble.dataclasses.Client
 import com.sergeenko.alexey.noble.dataclasses.Language
@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
+import kotlin.system.measureTimeMillis
 
 class ClientEditActivity : BaseActivity() {
 
@@ -115,7 +116,6 @@ class ClientEditActivity : BaseActivity() {
                     setCliensInfo(client, getLanguage())
                 }
             })
-
             isClientDeleted.observe(this@ClientEditActivity, {
                 if(it)
                     onBackPressed()

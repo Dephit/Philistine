@@ -45,7 +45,4 @@ class ClientEditViewModel(application: Application, val client: Client): BaseVie
         }
     }
 
-    init {
-
-    }
 }
