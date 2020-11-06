@@ -5,14 +5,16 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sergeenko.alexey.noble.dataclasses.*
+import com.sergeenko.alexey.noble.modules.NoInternetException
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.suspendAtomicCancellableCoroutine
+import retrofit2.*
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.IllegalStateException
 
 sealed class AuthState{
     object LoggingState: AuthState()
@@ -26,7 +28,6 @@ enum class AuthErrorType{
 }
 
 class AuthActivityViewModel(application: Application) : BaseViewModel(application) {
-
     val authState = MutableLiveData<AuthState>(AuthState.DefaultState)
     val langList = MutableLiveData<List<LangList>?>()
     val isListOpen = MutableLiveData<Boolean>(false)
@@ -65,30 +66,24 @@ class AuthActivityViewModel(application: Application) : BaseViewModel(applicatio
             authState.postValue(AuthState.ErrorState(AuthErrorType.AgreementError, getLanguage()?.you_must_accept_user_agreement))
             return
         }
-
         auth(email, password)
     }
 
-    private fun auth(email: String, password: String) {
-        api?.auth(email = email, password = password)?.enqueue(
-            object : Callback<Club> {
-                override fun onResponse(call: Call<Club>, response: Response<Club>) {
-                    if(response.isSuccessful){
-                        viewModelScope.launch(IO) {
-                            user = User(email = email, lastTimeSync = Calendar.getInstance().time.time, pass = password, club = response.body())
-                            addUser(user!!)
-                        }
-                    }else{
-                        authError(getLanguage()?.error)
-                    }
+    private fun auth(email: String, password: String) = viewModelScope.launch(IO) {
+        try {
+            api?.auth(email = email, password = password)?.let {club ->
+                user = User(email = email, lastTimeSync = Calendar.getInstance().time.time, pass = password, club = club)
+                addUser(user!!)
+            } ?: authError()
+        }catch (e: Exception){
+            getLanguage()?.apply {
+                when (e) {
+                    is NoInternetException -> authError(check_internet_connection)
+                    is IllegalStateException -> authError("$wrong_email $and $wrong_password")
+                    else -> authError(e.message)
                 }
-
-                override fun onFailure(call: Call<Club>, t: Throwable) {
-                    authError(t.message)
-                }
-
             }
-        )
+        }
     }
 
     private fun authError(message: String? = null) {

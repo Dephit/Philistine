@@ -50,6 +50,7 @@ class NetModule() {
         clientBuilder.readTimeout(60, TimeUnit.SECONDS)
         clientBuilder.writeTimeout(60, TimeUnit.SECONDS)
         clientBuilder.connectTimeout(60, TimeUnit.SECONDS)
+        clientBuilder.addInterceptor(NoConnectionInterceptor())
         //clientBuilder.addInterceptor(serviceInterceptor)
 
         val logging = HttpLoggingInterceptor()

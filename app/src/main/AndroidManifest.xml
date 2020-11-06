@@ -3,6 +3,7 @@
     package="com.sergeenko.alexey.noble">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".NobleApplication"
@@ -14,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Noble"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ClientEditActivity"></activity>
+        <activity android:name=".ClientEditActivity" />
         <activity android:name=".NewClientActivity" />
         <activity android:name=".StartActivity" />
         <activity android:name=".AgreementActivity" />

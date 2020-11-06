@@ -4,9 +4,11 @@ package com.sergeenko.alexey.noble
 import com.sergeenko.alexey.noble.dataclasses.Client
 import com.sergeenko.alexey.noble.dataclasses.Club
 import com.sergeenko.alexey.noble.dataclasses.Language
+import kotlinx.coroutines.Deferred
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface NobleApi {
@@ -28,12 +30,12 @@ interface NobleApi {
 
     @FormUrlEncoded
     @POST("query/clients.php")
-    fun auth(
+    suspend fun auth(
         @Field("api_key") apiKey: Int = Const.apiKey,
         @Field("api_event") apiEvent: String = Const.clubGet,
         @Field("user_email") email: String,
         @Field("user_pass") password: String
-    ): Call<Club>
+    ): Club
 
     @FormUrlEncoded
     @POST("query/clients.php")
