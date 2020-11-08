@@ -15,15 +15,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Noble"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ClientEditActivity" />
-        <activity android:name=".NewClientActivity" />
-        <activity android:name=".StartActivity" />
-        <activity android:name=".AgreementActivity" />
+        <activity android:name=".activities.ClientEditActivity" />
+        <activity android:name=".activities.NewClientActivity" />
+        <activity android:name=".activities.StartActivity" />
+        <activity android:name=".activities.AgreementActivity" />
         <activity
-            android:name=".PasswordRecoveryActivity"
+            android:name=".activities.PasswordRecoveryActivity"
             android:label="@string/title_activity_password_recovery" />
-        <activity android:name=".AuthActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.AuthActivity" />
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

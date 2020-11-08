@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     app:layout_constraintHorizontal_bias="0.5"
-    tools:context=".UserListFragment">
+    tools:context=".fragments.UserListFragment">
 
     <Button
         android:id="@+id/by_alphabet_button"

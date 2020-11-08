@@ -2,7 +2,10 @@ package com.sergeenko.alexey.noble.modules
 
 import android.app.Application
 import androidx.room.Room
-import com.sergeenko.alexey.noble.TrainingDao
+import com.sergeenko.alexey.noble.daos.ClientDao
+import com.sergeenko.alexey.noble.daos.ConfigDao
+import com.sergeenko.alexey.noble.daos.TrainingDao
+import com.sergeenko.alexey.noble.daos.UserDao
 import com.sergeenko.alexey.noble.database.AppDatabase
 import com.sergeenko.alexey.noble.dataclasses.*
 import dagger.Module

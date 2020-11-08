@@ -4,8 +4,8 @@ import android.app.Application
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.sergeenko.alexey.noble.NobleApi
-import com.sergeenko.alexey.noble.ServiceInterceptor
+import com.sergeenko.alexey.noble.apis.NobleApi
+import com.sergeenko.alexey.noble.utills.ServiceInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache

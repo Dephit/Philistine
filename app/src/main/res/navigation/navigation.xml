@@ -6,7 +6,7 @@
 
     <activity
         android:id="@+id/startActivity"
-        android:name="com.sergeenko.alexey.noble.StartActivity"
+        android:name="com.sergeenko.alexey.noble.activities.StartActivity"
         android:label="activity_start"
         tools:layout="@layout/activity_start" />
 </navigation>

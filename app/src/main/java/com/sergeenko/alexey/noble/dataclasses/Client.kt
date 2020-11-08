@@ -7,10 +7,12 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import com.sergeenko.alexey.noble.TrainingItem
-import com.sergeenko.alexey.noble.convertLongToTimeDDMM
-import com.sergeenko.alexey.noble.getAgeFromLong
-import com.sergeenko.alexey.noble.toByteArray
+import com.sergeenko.alexey.noble.utills.convertLongToTimeDDMM
+import com.sergeenko.alexey.noble.converters.BitmapConvector
+import com.sergeenko.alexey.noble.converters.MeasureListConvert
+import com.sergeenko.alexey.noble.converters.TrainingListConvert
+import com.sergeenko.alexey.noble.utills.getAgeFromLong
+import com.sergeenko.alexey.noble.utills.toByteArray
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONArray
@@ -59,7 +61,7 @@ data class Client(
     fun getName() = "${sirname ?: ""} ${page_name ?: ""}\n${patronymic ?: ""}"
 
     @Ignore
-    fun getClientAge(lang: Language) = age?.toLong()?.let { "${getAgeFromLong(it)} ${lang.years}" } ?: ""
+    fun getClientAge(lang: Language) = age?.let { "${getAgeFromLong(it)} ${lang.years}" } ?: ""
 
     @Ignore
     fun getClientLastVisit(lang: Language) = lastVisit?.let {
